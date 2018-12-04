@@ -30,7 +30,8 @@ int main(){
     // Creation de la matrice Point NM (Nbtri*3)
     Point **NM=initNM(NT,NTV,ListPoints,NbTri,Omega);
 
-
+    // Creation du fichier de resultats "PS.RES"
+    CreatFileResults("PS.RES",NT,Omega,NM,ListPoints,NbTri,NbPts);
 
 
     FreeMat(NT,NbTri); FreeMat(NTV,NbTri);
