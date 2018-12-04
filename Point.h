@@ -5,7 +5,8 @@
 class Point{
 private:
     // Donnees
-    double X,Y;
+    double X,Y; // coordonnées cartésiennes
+    double w1,w2,w3; // coordonnées barycentriques
 
 public:
     // constructeur & destructeur
@@ -16,7 +17,9 @@ public:
 	// fonctions
 	void affiche(void)const;
 	void attrib_coord(double x, double y);
+	void attrib_bary(double c1, double c2, double c3);
     void getCart(double &x,double &y);
+    void getBary(double &c1, double &c2, double &c3);
 
 };
 

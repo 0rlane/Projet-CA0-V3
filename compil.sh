@@ -1,0 +1,1 @@
+g++ Point.cpp Triangle.cpp Fonctions_F_G.cpp main.cpp

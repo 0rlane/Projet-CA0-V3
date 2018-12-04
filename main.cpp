@@ -30,11 +30,22 @@ int main(){
     // Creation de la matrice Point NM (Nbtri*3)
     Point **NM=initNM(NT,NTV,ListPoints,NbTri,Omega);
 
+    // Calcul des coordonnées barycentriques aux points Mi 
+    CoordBaryOmega(NT, ListPoints, NM, NbTri);
+    /*for (int i = 0; i < NbTri; ++i)
+    {
+        afficheCoordPoints(NM[i], 3);
+    }*/
+
     // Creation du fichier de resultats "PS.RES"
     CreatFileResults("PS.RES",NT,Omega,NM,ListPoints,NbTri,NbPts);
 
 
     FreeMat(NT,NbTri); FreeMat(NTV,NbTri);
+
+    delete[] ListPoints;
+    delete[] Omega;
+    delete[] NM;
 
     return 0;
 }
