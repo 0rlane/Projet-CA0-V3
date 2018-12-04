@@ -56,8 +56,8 @@ void CalculCoeff(double &a1, double &b1, double &c1, Point A, Point B){
     // Calcul des coefficents a, b, c de la droite (D): ax+by+c=0 passant par les point A et B
 
     double Xa, Ya, Xb, Yb;
-    A.getCoord(Xa,Ya);
-    B.getCoord(Xb,Yb);
+    A.getCart(Xa,Ya);
+    B.getCart(Xb,Yb);
     b1 = Xb - Xa;
     a1 = Ya - Yb;
     c1 = -Ya*b1 - Xa*a1;
@@ -95,8 +95,8 @@ double DistEucl(Point A, Point B){
 	// Calcule la distance euclidienne entre deux Points
 
 	double Xa, Ya, Xb, Yb;
-	A.getCoord(Xa,Ya);
-	B.getCoord(Xb,Yb);
+	A.getCart(Xa,Ya);
+	B.getCart(Xb,Yb);
 
 	return ( sqrt( (Xa-Xb)*(Xa-Xb)+(Ya-Yb)*(Ya-Yb) ) );
 }
@@ -115,14 +115,15 @@ Point* initOmega(Point* ListPoints, int NbTri, int **NT){
         Point A3=ListPoints[NT[k][2]-1];
 
         double X1,X2,X3,Y1,Y2,Y3;
-        A1.getCoord(X1,Y1);
-        A2.getCoord(X2,Y2);
-        A3.getCoord(X3,Y3);
+        A1.getCart(X1,Y1);
+        A2.getCart(X2,Y2);
+        A3.getCart(X3,Y3);
 
         // Coordonnees barycentrique de omega du triangle k
         CentreBary[0] = DistEucl(A2,A3);
         CentreBary[1] = DistEucl(A1,A3);
         CentreBary[2] = DistEucl(A1,A2);
+        //cout<<CentreBary[0]<<" "<<CentreBary[1]<<" "<<CentreBary[2]<<endl;
 
         // Coordonnnees cartesiennes de omega du triangle k
         double X, Y;
@@ -158,8 +159,8 @@ Point** initNM(int **NT, int **NTV, Point* ListPoints, int nbtri, Point *omega){
             }else {
                 // Si il n'y a pas de triangle voisin
                 double X, Y, X1, Y1, X2, Y2;
-                ListPoints[NT[k][(i+1)%3]-1].getCoord(X1,Y1);
-                ListPoints[NT[k][(i+2)%3]-1].getCoord(X2,Y2);
+                ListPoints[NT[k][(i+1)%3]-1].getCart(X1,Y1);
+                ListPoints[NT[k][(i+2)%3]-1].getCart(X2,Y2);
                 X=fabs(X1-X2)/2+min(X1,X2);
                 Y=fabs(Y1-Y2)/2+min(Y1,Y2);
                 NM[k][i].attrib_coord(X,Y);
@@ -175,17 +176,17 @@ void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point
     ofstream fichier(name);
     for (int k=0; k<NbTri; k++){
 
-        Omega[k].getCoord(X,Y);
+        Omega[k].getCart(X,Y);
         fichier<<k<<" "<<NT[k][0]<<" "<<NT[k][1]<<" "<<NT[k][2]<<" "<<X<<" "<<Y<<endl;
     }
     for (int k=0; k<NbTri; k++){
-        NM[k][0].getCoord(X1,Y1);
-        NM[k][1].getCoord(X2,Y2);
-        NM[k][2].getCoord(X3,Y3);
+        NM[k][0].getCart(X1,Y1);
+        NM[k][1].getCart(X2,Y2);
+        NM[k][2].getCart(X3,Y3);
         fichier<<k<<" "<<X1<<" "<<Y1<<" "<<X2<<" "<<Y2<<" "<<X3<<" "<<Y3<<endl;
     }
     for (int i=0; i<NbPts; i++){
-        ListPoints[i].getCoord(X,Y);
+        ListPoints[i].getCart(X,Y);
         fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i])<<" "<<fpx(ListPoints[i])<<" "<<fpy(ListPoints[i])<<endl;
     }
     fichier.close();
