@@ -64,7 +64,7 @@ void CalculCoeff(double &a1, double &b1, double &c1, Point A, Point B){
 }
 
 Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1, double c2){
-    // Calcul les corrdonnées X et Y d'intersection des deux droites de coeff a,b,c
+    // Calcul les corrdonnÃ©es X et Y d'intersection des deux droites de coeff a,b,c
 
     Point inter;
     int X, Y;
@@ -84,7 +84,7 @@ Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1,
         X = -c2/a2;
         Y = (-a1/b1)*X-c1/b1;
     }
-    else // b1 et b2 ne sont pas sensé etre nuls tous les deux
+    else // b1 et b2 ne sont pas sensÃ© etre nuls tous les deux
     cout << "erreur dans IntersectionDroites" << endl;
 
     inter.attrib_coord(X,Y);
@@ -157,7 +157,7 @@ Point** initNM(int **NT, int **NTV, Point *ListPoints, int nbtri, Point *omega){
 
             }else {
                 // Si il n'y a pas de triangle voisin
-                int X, Y, X1, Y1, X2, Y2;
+                double X, Y, X1, Y1, X2, Y2;
                 ListPoints[NT[k][(i+1)%3]-1].getCoord(X1,Y1);
                 ListPoints[NT[k][(i+2)%3]-1].getCoord(X2,Y2);
                 X=fabs(X1-X2)/2+min(X1,X2);
