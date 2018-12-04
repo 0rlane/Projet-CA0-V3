@@ -55,7 +55,7 @@ double gpy(Point A){
 double** initF(int NbPts, Point* ListPoints){
     // Initialisation de la matrice F (NbPts*3) contenant la valeur de f, de fpx et de fpy en chaque point du domaine
 
-    double **F=CreateMat(NbPts,3);
+    double **F=CreateMat<double>(NbPts,3);
 
     for (int i=0; i<NbPts; i++){
         F[i][0]=f(ListPoints[i]);  //La premiere colonne contient f(x,y)
@@ -68,9 +68,13 @@ double** initF(int NbPts, Point* ListPoints){
 double** initG(int NbPts, Point* ListPoints){
     // Initialisation de la matrice F (N*3)
 
+    double **G=CreateMat<double>(NbPts,3);
+
     for (int i=0; i<NbPts; i++){
         G[i][0]=g(ListPoints[i]);  //La premiere colonne contient g(x,y)
         G[i][1]=gpx(ListPoints[i]);  // La seconde colonne contient la derive de g en x
         G[i][2]=gpy(ListPoints[i]);  // La seconde colonne contient la derive de g en y
     }
+    return G;
 }
+
