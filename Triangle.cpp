@@ -168,3 +168,25 @@ Point** initNM(int **NT, int **NTV, Point* ListPoints, int nbtri, Point *omega){
     }
     return NM;
 }
+
+void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints,int NbTri, int NbPts){
+    // Creation du fichier PS.RES
+    double X, Y, X1, X2, X3, Y1, Y2, Y3;
+    ofstream fichier(name);
+    for (int k=0; k<NbTri; k++){
+
+        Omega[k].getCoord(X,Y);
+        fichier<<k<<" "<<NT[k][0]<<" "<<NT[k][1]<<" "<<NT[k][2]<<" "<<X<<" "<<Y<<endl;
+    }
+    for (int k=0; k<NbTri; k++){
+        NM[k][0].getCoord(X1,Y1);
+        NM[k][1].getCoord(X2,Y2);
+        NM[k][2].getCoord(X3,Y3);
+        fichier<<k<<" "<<X1<<" "<<Y1<<" "<<X2<<" "<<Y2<<" "<<X3<<" "<<Y3<<endl;
+    }
+    for (int i=0; i<NbPts; i++){
+        ListPoints[i].getCoord(X,Y);
+        fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i])<<" "<<fpx(ListPoints[i])<<" "<<fpy(ListPoints[i])<<endl;
+    }
+    fichier.close();
+}
