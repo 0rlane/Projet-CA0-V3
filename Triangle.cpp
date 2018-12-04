@@ -67,7 +67,7 @@ Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1,
     // Calcul les corrdonnées X et Y d'intersection des deux droites de coeff a,b,c
 
     Point inter;
-    int X, Y;
+    double X, Y;
 
     if (b1!=0. && b2!=0.)
     {
@@ -134,7 +134,7 @@ Point* initOmega(Point* ListPoints, int NbTri, int **NT){
     return Omega;
 }
 
-Point** initNM(int **NT, int **NTV, Point *ListPoints, int nbtri, Point *omega){
+Point** initNM(int **NT, int **NTV, Point* ListPoints, int nbtri, Point *omega){
     /*Initilisationde la matrice NM Point (nbtriangles*3) qui contient les coordonnees x et y des trois points Mi du triangle k
     NT=matrice (nb_triangles*3) qui contient les 3 sommets pour chaque traingle
     NTV= matrice (nb_triangles*3) qui contient le numero des 3 triangles voisins pour chaque triangle (-1 si il n'y a pas de traingle voisin)
