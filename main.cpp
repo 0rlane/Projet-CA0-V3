@@ -31,7 +31,7 @@ int main(){
     Point **NM=initNM(NT,NTV,ListPoints,NbTri,Omega);
 
     // Calcul des coordonnées barycentriques aux points Mi 
-    CoordBaryOmega(NT, ListPoints, NM, NbTri);
+    CoordBaryMi(NT, ListPoints, NM, NbTri);
     /*for (int i = 0; i < NbTri; ++i)
     {
         afficheCoordPoints(NM[i], 3);

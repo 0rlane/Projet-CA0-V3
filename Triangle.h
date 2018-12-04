@@ -27,6 +27,6 @@ Point** initNM(int **NT, int **NTV, Point *ListPoints, int nbtri, Point *omega);
 void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints,int NbTri, int NbPts);
 
 // calcule les coordonnées barycentriques des 3 Mi de chaque triangle 
-void CoordBaryOmega(int **NT, Point* ListPoints, Point **NM, int NbTri);
+void CoordBaryMi(int **NT, Point* ListPoints, Point **NM, int NbTri);
 
 #endif // TRIANGLE_H

@@ -194,7 +194,7 @@ void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point
     fichier.close();
 }
 
-void CoordBaryOmega(int **NT, Point *ListPoints, Point **NM, int NbTri)
+void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri)
 {
 
     Point A1,A2,A3,M1,M2,M3;
