@@ -8,7 +8,7 @@ double f(Point A){
     // Fonction f(x,y)=exp(x+y)
 
     double x,y;
-    A.getCoord(x,y);
+    A.getCart(x,y);
     return exp(x+y);
 }
 
@@ -16,7 +16,7 @@ double fpx(Point A){
     // Derive en x de la fonction f(x,y)
 
     double x,y;
-    A.getCoord(x,y);
+    A.getCart(x,y);
     return exp(x+y);
 }
 
@@ -24,7 +24,7 @@ double fpy(Point A){
     // Derive en y de la fonction f(x,y)
 
     double x,y;
-    A.getCoord(x,y);
+    A.getCart(x,y);
     return exp(x+y);
 }
 
@@ -32,7 +32,7 @@ double g(Point A){
     // Fonction g(x,y)
 
     double x,y;
-    A.getCoord(x,y);
+    A.getCart(x,y);
     return y*y*y-2*x*y*y-5*x*x*y+10*x*y+1;
 }
 
@@ -40,7 +40,7 @@ double gpx(Point A){
     // Derive en x de la fonction g(x,y)
 
     double x,y;
-    A.getCoord(x,y);
+    A.getCart(x,y);
     return -2*y*y-10*x*y+10*y;
 }
 
@@ -48,7 +48,7 @@ double gpy(Point A){
     // Derive en y de la fonction g(x,y)
 
     double x,y;
-    A.getCoord(x,y);
+    A.getCart(x,y);
     return 3*y*y-4*x*y-5*x*x+10*x;
 }
 
