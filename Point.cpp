@@ -12,7 +12,7 @@ Point::~Point() {}
 void Point::affiche()const{
     /* Affichage des coordonnee du Point */
 
-	cout << X << " " << Y << endl;
+	cout << "cartesiennes : "<< X << " " << Y << " barycentriques : " << w1 << " " << w2 << " " << w3 << endl;
 }
 
 void Point::attrib_coord(double xi, double yi){
@@ -22,11 +22,27 @@ void Point::attrib_coord(double xi, double yi){
 	Y = yi;
 }
 
+void Point::attrib_bary(double c1, double c2, double c3){
+     /* Attribution des coordonnees du Point */
+
+    w1 = c1;
+    w2 = c2;
+    w3 = c3;
+}
+
 void Point::getCart(double &xi,double &yi){
     /* Renvoie la valeur des coordonnees du point */
 
 	xi = X;
 	yi = Y;
+}
+
+void Point::getBary(double &c1, double &c2, double &c3)
+{
+    c1 = w1;
+    c2 = w2;
+    c3 = w3;
+
 }
 
 //////////////////////////////////////////////// FONCTIONS NON-MEMBRES ////////////////////////////////////////////
@@ -55,7 +71,7 @@ void afficheCoordPoints(Point* ListPoints, int N){
     // Affichage des traingles et de leurs coordonnees cartesiennes
 
     for(int k=0; k<N; k++){
-        cout<<"Triangle "<<k<<": ";
+        //cout<<"Triangle "<<k<<": ";
         ListPoints[k].affiche();
     }
 }

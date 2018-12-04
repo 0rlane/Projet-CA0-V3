@@ -104,31 +104,34 @@ double DistEucl(Point A, Point B){
 Point* initOmega(Point* ListPoints, int NbTri, int **NT){
     // Initialisation de la matrice Omega de Nbtri Points
 
-    Point *Omega=new Point[NbTri];
+    Point* Omega = new Point[NbTri];
+
+    double w1,w2,w3,sumw;
+    double X1,X2,X3,Y1,Y2,Y3;
+    double X, Y;
 
     for (int k=0; k<NbTri; k++){
-        double *CentreBary=new double[3];   // Coordonnees barycentrique de omega du triangle k
 
         // Recuperation des coordonnees des sommets A1, A2 et A3 du triangle k
         Point A1=ListPoints[NT[k][0]-1];
         Point A2=ListPoints[NT[k][1]-1];
         Point A3=ListPoints[NT[k][2]-1];
-
-        double X1,X2,X3,Y1,Y2,Y3;
         A1.getCart(X1,Y1);
         A2.getCart(X2,Y2);
         A3.getCart(X3,Y3);
 
         // Coordonnees barycentrique de omega du triangle k
-        CentreBary[0] = DistEucl(A2,A3);
-        CentreBary[1] = DistEucl(A1,A3);
-        CentreBary[2] = DistEucl(A1,A2);
-        //cout<<CentreBary[0]<<" "<<CentreBary[1]<<" "<<CentreBary[2]<<endl;
+        w1 = DistEucl(A2,A3);
+        w2 = DistEucl(A1,A3);
+        w3 = DistEucl(A1,A2);
+        sumw = w1+w2+w3;
+        Omega[k].attrib_bary((w1/sumw),(w2/sumw),(w3/sumw));
+        
+        //cout<<w1<<" "<<w2<<" "<<w3<<endl;
 
         // Coordonnnees cartesiennes de omega du triangle k
-        double X, Y;
-        X=(CentreBary[0]*X1+CentreBary[1]*X2+CentreBary[2]*X3)/fabs(CentreBary[0]+CentreBary[1]+CentreBary[2]);
-        Y=(CentreBary[0]*Y1+CentreBary[1]*Y2+CentreBary[2]*Y3 )/fabs(CentreBary[0]+CentreBary[1]+CentreBary[2]);
+        X = (w1*X1 + w2*X2 + w3*X3) / sumw;
+        Y = (w1*Y1 + w2*Y2 + w3*Y3) / sumw;
         Omega[k].attrib_coord(X,Y);
     }
 
@@ -190,4 +193,34 @@ void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point
         fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i])<<" "<<fpx(ListPoints[i])<<" "<<fpy(ListPoints[i])<<endl;
     }
     fichier.close();
+}
+
+void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri)
+{
+
+    Point A1,A2,A3,M1,M2,M3;
+    double alpha1, alpha2, alpha3;
+
+    for (int i = 0; i < NbTri; ++i)
+    {
+        // Recuperation des coordonnees des sommets A1, A2 et A3 du triangle i
+        A1 = ListPoints[NT[i][0]-1];
+        A2 = ListPoints[NT[i][1]-1];
+        A3 = ListPoints[NT[i][2]-1];
+
+        // Recuperation des coordonnées des 3 Mi du triangle i
+        M1 = NM[i][0];
+        M2 = NM[i][1];
+        M3 = NM[i][2];
+
+        alpha1 = DistEucl(A2,M1) / DistEucl(A2,A3);
+        alpha2 = DistEucl(A1,M3) / DistEucl(A1,A2);
+        alpha3 = DistEucl(A3,M2) / DistEucl(A3,A1);
+
+        // Attribution des coordonnées barycentriques aux points Mi
+        NM[i][0].attrib_bary(0, 1-alpha1, alpha1);
+        NM[i][1].attrib_bary(alpha2, 0, 1-alpha2);
+        NM[i][2].attrib_bary(1-alpha3, alpha3, 0);
+
+    }
 }
