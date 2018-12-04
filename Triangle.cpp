@@ -106,7 +106,7 @@ Point* initOmega(Point* ListPoints, int NbTri, int **NT){
 
     Point* Omega = new Point[NbTri];
 
-    double w1,w2,w3;
+    double w1,w2,w3,sumw;
     double X1,X2,X3,Y1,Y2,Y3;
     double X, Y;
 
@@ -124,13 +124,14 @@ Point* initOmega(Point* ListPoints, int NbTri, int **NT){
         w1 = DistEucl(A2,A3);
         w2 = DistEucl(A1,A3);
         w3 = DistEucl(A1,A2);
-        Omega[k].attrib_bary(w1,w2,w3);
+        sumw = w1+w2+w3;
+        Omega[k].attrib_bary((w1/sumw),(w2/sumw),(w3/sumw));
         
         //cout<<w1<<" "<<w2<<" "<<w3<<endl;
 
         // Coordonnnees cartesiennes de omega du triangle k
-        X=(w1*X1+w2*X2+w3*X3)/fabs(w1+w2+w3);
-        Y=(w1*Y1+w2*Y2+w3*Y3 )/fabs(w1+w2+w3);
+        X = (w1*X1 + w2*X2 + w3*X3) / sumw;
+        Y = (w1*Y1 + w2*Y2 + w3*Y3) / sumw;
         Omega[k].attrib_coord(X,Y);
     }
 
