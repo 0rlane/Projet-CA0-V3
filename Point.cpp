@@ -66,7 +66,7 @@ void CreateFilePoint(const char* name, int nrow, Point *A){
     double X,Y;
     ofstream fichier(name);
     for (int i=0; i<nrow; i++){
-        A[i].getCoord(X,Y);
+        A[i].getCart(X,Y);
         fichier<<X<<" "<<Y<<endl;
     }
     fichier.close();
@@ -79,7 +79,7 @@ void CreateFileMatPoint(const char* name, int nrow, int ncol, Point **A){
     ofstream fichier(name);
     for (int i=0; i<nrow; i++){
         for (int j=0; j<ncol; j++){
-            A[i][j].getCoord(X,Y);
+            A[i][j].getCart(X,Y);
             fichier<<X<<" "<<Y<<" ";
         }
         fichier<<endl;
