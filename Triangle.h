@@ -24,3 +24,4 @@ Point* initOmega(Point* ListPoints, int NbTri, int **NT);
 Point** initNM(int **NT, int **NTV, Point *ListPoints, int nbtri, Point *omega);
 
 #endif // TRIANGLE_H
+
