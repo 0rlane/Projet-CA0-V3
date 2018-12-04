@@ -7,6 +7,6 @@ Quest 2: ok
 Quest 3: ok
         Seul les coordonnées cartésiennes sont gardés en mémoire pour l'instant
         
-Quest 4: Pas encore vérifier
+Quest 4: ok
 
 Quest 5:
