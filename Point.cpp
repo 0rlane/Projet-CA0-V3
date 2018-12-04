@@ -22,7 +22,7 @@ void Point::attrib_coord(double xi, double yi){
 	Y = yi;
 }
 
-void Point::getCoord(double &xi,double &yi){
+void Point::getCart(double &xi,double &yi){
     /* Renvoie la valeur des coordonnees du point */
 
 	xi = X;
