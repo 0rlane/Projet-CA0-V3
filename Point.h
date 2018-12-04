@@ -16,7 +16,7 @@ public:
 	// fonctions
 	void affiche(void)const;
 	void attrib_coord(double x, double y);
-    void getCoord(double &x,double &y);
+    void getCart(double &x,double &y);
 
 };
 
