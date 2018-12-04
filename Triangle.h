@@ -1,3 +1,7 @@
+#ifndef TRIANGLE_H
+#define TRIANGLE_H
+
+
 #include "Point.h"
 #include "Fonctions_F_G.h"
 #include "Matrice.h"
