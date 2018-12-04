@@ -1,7 +1,5 @@
-#ifndef TRIANGLE_H
-#define TRIANGLE_H
-
 #include "Point.h"
+#include "Fonctions_F_G.h"
 #include "Matrice.h"
 #include <iostream>
 #include <fstream>
@@ -23,5 +21,6 @@ Point* initOmega(Point* ListPoints, int NbTri, int **NT);
 
 Point** initNM(int **NT, int **NTV, Point *ListPoints, int nbtri, Point *omega);
 
-#endif // TRIANGLE_H
+void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints,int NbTri, int NbPts);
 
+#endif // TRIANGLE_H
