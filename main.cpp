@@ -6,8 +6,7 @@
 
 using namespace std;
 
-int main()
-{
+int main(){
     int NbPts;  // nombre de points dans le domaine D
     int NbTri;  // nombre de triangles dans le domaine D
 
@@ -32,7 +31,10 @@ int main()
     Point **NM=initNM(NT,NTV,ListPoints,NbTri,Omega);
 
 
+
+
     FreeMat(NT,NbTri); FreeMat(NTV,NbTri);
 
     return 0;
 }
+
