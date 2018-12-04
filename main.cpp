@@ -16,7 +16,7 @@ int main(){
 
     // Creation de la matrice NM (NbTri*3) contenant les 3 sommets de chaque triangle
     int **NT=lectTriangles("listri.dat",NbTri);
-    //AfficheMat(NbTri,3,NM);
+    //AfficheMat(NbTri,3,NT);
 
     /* Creation de la matrice NTV (NbTri*3) contenant le numero de 3 triangles voisins pour chaque triangle
     On affecte la valeur -1 lorsqu'il n'y a pas de triangle voisin */
