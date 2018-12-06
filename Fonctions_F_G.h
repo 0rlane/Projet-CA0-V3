@@ -13,11 +13,15 @@ double fpx(Point A);
 
 double fpy(Point A);
 
+Point gradf(Point A);
+
 double g(Point A);
 
 double gpx(Point A);
 
 double gpy(Point A);
+
+Point gradg(Point A);
 
 double** initF(int NbPts, Point* ListPoints);
 
