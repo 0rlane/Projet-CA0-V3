@@ -28,6 +28,15 @@ double fpy(Point A){
     return exp(x+y);
 }
 
+Point gradf(Point A){
+    // Gradient de la fonction f au point A
+    double x,y;
+    A.getCart(x,y);
+    Point B;
+    B.attrib_coord(fpx(A),fpy(A));
+    return B;
+}
+
 double g(Point A){
     // Fonction g(x,y)
 
@@ -50,6 +59,15 @@ double gpy(Point A){
     double x,y;
     A.getCart(x,y);
     return 3*y*y-4*x*y-5*x*x+10*x;
+}
+
+Point gradg(Point A){
+    // Gradient de la fonction f au point A
+    double x,y;
+    A.getCart(x,y);
+    Point B;
+    B.attrib_coord(gpx(A),gpy(A));
+    return B;
 }
 
 double** initF(int NbPts, Point* ListPoints){
