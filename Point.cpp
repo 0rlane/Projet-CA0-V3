@@ -24,7 +24,6 @@ void Point::attrib_coord(double xi, double yi){
 
 void Point::attrib_bary(double c1, double c2, double c3){
      /* Attribution des coordonnees du Point */
-
     w1 = c1;
     w2 = c2;
     w3 = c3;
@@ -37,13 +36,11 @@ void Point::getCart(double &xi,double &yi){
 	yi = Y;
 }
 
-void Point::getBary(double &c1, double &c2, double &c3)
-{
+void Point::getBary(double &c1, double &c2, double &c3){
     c1 = w1;
     c2 = w2;
     c3 = w3;
-
-}
+ }
 
 //////////////////////////////////////////////// FONCTIONS NON-MEMBRES ////////////////////////////////////////////
 
@@ -101,5 +98,27 @@ void CreateFileMatPoint(const char* name, int nrow, int ncol, Point **A){
         fichier<<endl;
     }
     fichier.close();
+}
+
+double multPointsCart(Point A, Point B){
+    // Multiplication des coordonnees cartesiennes des point A et B
+
+    double xA,yA,xB,yB;
+    A.getCart(xA,yA);
+    B.getCart(xB,yB);
+
+    double C;
+    C=xA*xB+yA*yB;
+    return C;
+}
+
+Point calcVect(Point A, Point B){
+    // Calcul du point vect(AB)
+
+    double xA,yA,xB,yB;
+    A.getCart(xA,yA);
+    B.getCart(xB,yB);
+    Point C(xB-xA,yB-yA);
+    return C;
 }
 
