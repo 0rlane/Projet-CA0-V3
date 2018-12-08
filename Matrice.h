@@ -25,6 +25,15 @@ template<typename Type> Type AfficheMat(int nrow, int ncol, Type **A){
   }
 }
 
+template<typename Type> Type AfficheVect(int nrow, Type *A){
+    // Affichage d'un vecteur de taille nrow
+
+    for(int i=0; i<nrow; i++){
+      std::cout<<A[i]<<" ";
+    }
+    std::cout<<std::endl;
+}
+
 template<typename Type> Type FreeMat(Type **A, int nrow){
     // Desalocaation memoire de la matrice A
 
