@@ -249,11 +249,11 @@ double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point 
 
     double p, q, r, a, b, alpha, w1, w2, w3;
     for (int i=0; i<3; i++){
-        p=multPointsCart(gradf(NT[k][i]),calcVect(NT[k][i],NM[k][(i+1)%3]));  //Initialisation du point pi
-        q=multPointsCart(gradf(NT[k][i]),calcVect(NT[k][i],NM[k][(i+2)%3]));  //Initialisation du point qi
-        r=multPointsCart(gradf(NT[k][i]),calcVect(NT[k][i],Omega[k]);  //Initialisation du point ri
+        p=multPointsCart(gradf(ListPoints[NT[k][i]]),calcVect(ListPoints[NT[k][i]],NM[k][(i+1)%3]));  //Initialisation du point pi
+        q=multPointsCart(gradf(ListPoints[NT[k][i]]),calcVect(ListPoints[NT[k][i]],NM[k][(i+2)%3]));  //Initialisation du point qi
+        r=multPointsCart(gradf(ListPoints[NT[k][i]]),calcVect(ListPoints[NT[k][i]],Omega[k]));  //Initialisation du point ri
 
-        coefInter[i]=f(NT[k][i]);   // Initialisation des coefficients ai
+        coefInter[i]=f(ListPoints[NT[k][i]]);   // Initialisation des coefficients ai
         coefInter[i+3]=coefInter[i]+q/2;   //Initialisation des coefficients bi
         coefInter[i+6]=coefInter[i]+p/2;   //Initialisation des coefficients ci
         coefInter[i+9]=coefInter[i]+r/2;   //Initialisation des coefficients di
@@ -264,14 +264,14 @@ double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point 
         case 1:
             NM[k][1].getBary(alpha,b,a);
         case 2:
-            NM[k][2].getBary(a,alpha,b)
+            NM[k][2].getBary(a,alpha,b);
         }
-        Omega.getBary(w1,w2,w3);
+        Omega[k].getBary(w1,w2,w3);
 
         coefInter[i+12]=alpha*coefInter[9+(i+2)%3]+(1-alpha)*coefInter[9+(i+1)%3];
         coefInter[i+15]=alpha*coefInter[6+(i+2)%3]+(1-alpha)*coefInter[3+(i+1)%3];
-        coefInter[i+18]=w1*coefInter[9]+w2*coefInter[10]+w3*coefInter[11];
     }
+    coefInter[18]=w1*coefInter[9]+w2*coefInter[10]+w3*coefInter[11];
 
     return coefInter;
 }
