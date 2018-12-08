@@ -5,8 +5,8 @@
 class Point{
 private:
     // Donnees
-    double X,Y; // coordonnées cartésiennes
-    double w1,w2,w3; // coordonnées barycentriques
+    double X,Y; // Coordonnees cartesiennes
+    double w1,w2,w3; //coordonnees barycentriques
 
 public:
     // constructeur & destructeur
@@ -28,5 +28,9 @@ Point* LecPoints(const char* name, int &N);
 void afficheCoordPoints(Point* ListPoints, int N);
 void CreateFilePoint(const char* name, int nrow, Point *A);
 void CreateFileMatPoint(const char* name, int nrow, int ncol, Point **A);
+double multPointsCart(Point A, Point B);
+Point calcVect(Point A, Point B);
 
 #endif // POINT_H
+
+

@@ -25,6 +25,15 @@ template<typename Type> Type AfficheMat(int nrow, int ncol, Type **A){
   }
 }
 
+template<typename Type> Type AfficheVect(int nrow, Type *A){
+    // Affichage d'un vecteur de taille nrow
+
+    for(int i=0; i<nrow; i++){
+      std::cout<<A[i]<<" ";
+    }
+    std::cout<<std::endl;
+}
+
 template<typename Type> Type FreeMat(Type **A, int nrow){
     // Desalocaation memoire de la matrice A
 
@@ -49,5 +58,18 @@ template<typename Type> Type CreateFileMat(const char* name, int nrow, int ncol,
     fichier.close();
 }
 
+template<typename Type> Type multVect(Type *A, Type *B, int sA, int sB){
+    // Multipliaction du vecteur A de taille sA avec le vecteur B de taille sB
+    double C(0);
+    if (sA == sB){
+        for(int i=0; i<sA; i++){
+            C+=A[i]*B[i];
+        }
+    }else{
+        std::cout<<"Erreur dans la mutiplication de vecteur";
+    }
+    return C;
+}
 
 #endif // MATRICE_H
+
