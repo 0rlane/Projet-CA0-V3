@@ -30,6 +30,6 @@ void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point
 
 //int LocatePoint(Point A, double a, double b, double c, double d, Point *ListPoints, int **NT, Point *Omega);
 
-double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point *Omega)
+double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point *Omega);
 
 #endif // TRIANGLE_H
