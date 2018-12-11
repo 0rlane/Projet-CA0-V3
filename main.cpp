@@ -40,6 +40,14 @@ int main(){
     // Creation du fichier de resultats "PS.RES"
     CreatFileResults("PS.RES",NT,Omega,NM,ListPoints,NbTri,NbPts);
 
+    /*Point A(0.2,1.1);
+    int triangle=LocatePointTriangle(A,0,3,0,3,ListPoints,NT);
+    cout<<"Le point";A.affiche();cout<<" est dans le triangle "<<triangle<<endl;
+    cout<<"Les sommets de ce triangle sont les points"<<endl;
+    cout<<"Point "<<NT[triangle][0]<<" : "; ListPoints[NT[triangle][0]].affiche();
+    cout<<"Point "<<NT[triangle][1]<<" : "; ListPoints[NT[triangle][1]].affiche();
+    cout<<"Point "<<NT[triangle][2]<<" : "; ListPoints[NT[triangle][2]].affiche();*/
+    
 
     FreeMat(NT,NbTri); FreeMat(NTV,NbTri);
 
