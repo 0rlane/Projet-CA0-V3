@@ -249,7 +249,7 @@ void BaryToCart( Point &A, Point S1, Point S2, Point S3){
     S2.getCart(x2, y2);
     S3.getCart(x3, y3);
     A.getBary(w1,w2,w3);
-     double X = w1*x1 + w2*x2 + w3*x3;
+    double X = w1*x1 + w2*x2 + w3*x3;
     double Y = w1*y1 + w2*y2 + w3*x3;
      A.attrib_coord(X,Y);
 }
@@ -332,7 +332,6 @@ Point** MicroTriangle(int k, int **NT, Point *ListPoints, Point *Omega, Point **
         j++;
     }
 
-    //NMT[0][0]=ListPoints[NT[k][0]-1]; NMT[0][1]=Omega[k]; NMT[0][2]=NM[k][1];
     return NMT;
 }
 
