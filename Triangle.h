@@ -32,7 +32,9 @@ void CartToBary( Point A, Point S1, Point S2, Point S3);
 
 void BaryToCart( Point A, Point S1, Point S2, Point S3);
 
-//int LocatePoint(Point A, double a, double b, double c, double d, Point *ListPoints, int **NT, Point *Omega);
+bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints);
+
+int LocatePointTriangle(Point A, double a, double b, double c, double d, Point *ListPoints, int **NT);
 
 double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point *Omega);
 
