@@ -28,6 +28,10 @@ void CoordBaryMi(int **NT, Point* ListPoints, Point **NM, int NbTri);
 
 void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints,int NbTri, int NbPts);
 
+void CartToBary( Point A, Point S1, Point S2, Point S3);
+
+void BaryToCart( Point A, Point S1, Point S2, Point S3);
+
 //int LocatePoint(Point A, double a, double b, double c, double d, Point *ListPoints, int **NT, Point *Omega);
 
 double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point *Omega);
