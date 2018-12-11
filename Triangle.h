@@ -30,7 +30,7 @@ void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point
 
 void CartToBary(Point& A, Point S1, Point S2, Point S3);
 
-void BaryToCart( Point &A, Point S1, Point S2, Point S3);
+void BaryToCart( Point& A, Point S1, Point S2, Point S3);
 
 bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints);
 
@@ -45,4 +45,3 @@ bool dansMicroTriangle(Point& A, int t, Point **NMT);
 int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, int **NT, Point *Omega, Point **NM);
 
 #endif // TRIANGLE_H
-
