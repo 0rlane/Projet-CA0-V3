@@ -240,6 +240,24 @@ void CartToBary(Point& A, Point S1, Point S2, Point S3){
     A.attrib_bary(w1, w2, w3);
 }
 
+void BaryToCart( Point &A, Point S1, Point S2, Point S3)
+{
+    // calcule les coordonnées cartesiennes d'un point A par rapport au triangle de sommet S1,S2,S3
+
+    double w1,w2,w3;
+    double x1,x2,x3,y1,y2,y3;
+    
+    S1.getCart(x1, y1);
+    S2.getCart(x2, y2);
+    S3.getCart(x3, y3);
+    A.getBary(w1,w2,w3);
+
+    double X = w1*x1 + w2*x2 + w3*x3;
+    double Y = w1*y1 + w2*y2 + w3*x3;
+
+    A.attrib_coord(X,Y);
+}
+
 bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints){
     // Renvoie un booleen si le Point A est dans le triangle k
 
