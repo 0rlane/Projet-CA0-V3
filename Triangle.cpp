@@ -240,28 +240,24 @@ void CartToBary(Point& A, Point S1, Point S2, Point S3){
     A.attrib_bary(w1, w2, w3);
 }
 
-void BaryToCart( Point &A, Point S1, Point S2, Point S3)
-{
+void BaryToCart( Point &A, Point S1, Point S2, Point S3){
     // calcule les coordonnées cartesiennes d'un point A par rapport au triangle de sommet S1,S2,S3
-
-    double w1,w2,w3;
+     double w1,w2,w3;
     double x1,x2,x3,y1,y2,y3;
-    
+
     S1.getCart(x1, y1);
     S2.getCart(x2, y2);
     S3.getCart(x3, y3);
     A.getBary(w1,w2,w3);
-
-    double X = w1*x1 + w2*x2 + w3*x3;
+     double X = w1*x1 + w2*x2 + w3*x3;
     double Y = w1*y1 + w2*y2 + w3*x3;
-
-    A.attrib_coord(X,Y);
+     A.attrib_coord(X,Y);
 }
 
 bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints){
     // Renvoie un booleen si le Point A est dans le triangle k
 
-    CartToBary(A,ListPoints[NT[k][0]],ListPoints[NT[k][1]],ListPoints[NT[k][2]]);
+    CartToBary(A,ListPoints[NT[k][0]-1],ListPoints[NT[k][1]-1],ListPoints[NT[k][2]-1]);
     double w1,w2,w3;
     A.getBary(w1,w2,w3);
     if(w1<0 || w2<0 || w3<0){
@@ -271,24 +267,17 @@ bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints){
     }
 }
 
-int LocatePointTriangle(Point A, double a, double b, double c, double d, Point *ListPoints, int **NT){
+int LocatePointTriangle(Point A, Point *ListPoints, int **NT, int nbtri){
     //La fonction renvoie le numero du triangle où est localise le Point A dans le domaine D=[a,b]*[c,d]
 
-    double X,Y;
-    A.getCart(X,Y);
     int k(0);   //numero du triangle contenant le Point A. On demmarre du triangle 0 pour faire la recherche
-    if (X>a && X<b && Y>c && Y<d){
-        bool test(false);
-        while(test==false){
-            test=dansTriangle(A,k,NT,ListPoints);
-            k+=1;
-        }
-    }else{
-        cout<<"Le point n'est pas compris dans le domaine"<<endl;
+    bool test(false);
+    while(test==false && k<nbtri){
+        test=dansTriangle(A,k,NT,ListPoints);
+        k+=1;
     }
     return k-1;
 }
-
 
 double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point *Omega){
     /* Renvoie un vecteur de double qui contient tous les coefficients pour 1 triangle donne en argument
@@ -329,4 +318,48 @@ double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point 
 
     return coefInter;
 }
+
+Point** MicroTriangle(int k, int **NT, Point *ListPoints, Point *Omega, Point **NM){
+    // Renvoie une matrice de Point (6*3) qui renvoie les sommets de chaque microtriangle dans un triangle
+
+    Point **NMT=CreateMat<Point>(6,3);
+    int j(0);
+
+    // A VERIFIER CETTE PARTIE CAR C'EST ICI QU'IL Y A UN BEUG
+    for (int i=0; i<3; i++){
+        NMT[i+j][0]=ListPoints[NT[k][i]-1]; NMT[i+j][1]=Omega[k]; NMT[i+j][2]=NM[k][(i+1)%3];
+        NMT[i+1+j][0]=ListPoints[NT[k][i]-1]; NMT[i+1+j][1]=NM[k][(i+2)%3]; NMT[i+1+j][2]=Omega[k];
+        j++;
+    }
+
+    //NMT[0][0]=ListPoints[NT[k][0]-1]; NMT[0][1]=Omega[k]; NMT[0][2]=NM[k][1];
+    return NMT;
+}
+
+bool dansMicroTriangle(Point& A, int t, Point **NMT){
+    // Renvoie un booleen si le Point A est dans le triangle k
+
+    CartToBary(A,NMT[t][0],NMT[t][1],NMT[t][2]);
+    double w1,w2,w3;
+    A.getBary(w1,w2,w3);
+    if(w1<0 || w2<0 || w3<0){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, int **NT, Point *Omega, Point **NM){
+    //La fonction renvoie le numero du micro triangle où est localise le Point A dans le triangle k
+
+    Point **NMT=MicroTriangle(k,NT,ListPoints,Omega,NM);
+    bool test(false);
+    int t(0);
+    while(test==false && t<6){
+        test=dansMicroTriangle(A,t,NMT);
+        t+=1;
+    }
+    return t-1;
+}
+
 
