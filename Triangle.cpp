@@ -325,7 +325,7 @@ Point** MicroTriangle(int k, int **NT, Point *ListPoints, Point *Omega, Point **
     Point **NMT=CreateMat<Point>(6,3);
     int j(0);
 
-    // A VERIFIER CETTE PARTIE CAR C'EST ICI QU'IL Y A UN BEUG
+ 
     for (int i=0; i<3; i++){
         NMT[i+j][0]=ListPoints[NT[k][i]-1]; NMT[i+j][1]=Omega[k]; NMT[i+j][2]=NM[k][(i+1)%3];
         NMT[i+1+j][0]=ListPoints[NT[k][i]-1]; NMT[i+1+j][1]=NM[k][(i+2)%3]; NMT[i+1+j][2]=Omega[k];
