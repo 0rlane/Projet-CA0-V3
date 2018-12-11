@@ -220,8 +220,7 @@ void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point
     fichier.close();
 }
 
-void CartToBary( Point A, Point S1, Point S2, Point S3)
-{
+void CartToBary(Point& A, Point S1, Point S2, Point S3){
     // calcule les coordonnées barycentriques du point A par rapport au triangle de sommets S1,S2,S3
 
     double w1,w2,w3;
@@ -241,26 +240,55 @@ void CartToBary( Point A, Point S1, Point S2, Point S3)
     A.attrib_bary(w1, w2, w3);
 }
 
-void BaryToCart( Point A, Point S1, Point S2, Point S3)
+void BaryToCart( Point &A, Point S1, Point S2, Point S3)
 {
-    cout << "WIP" << endl;
+    // calcule les coordonnées cartesiennes d'un point A par rapport au triangle de sommet S1,S2,S3
+
+    double w1,w2,w3;
+    double x1,x2,x3,y1,y2,y3;
+    
+    S1.getCart(x1, y1);
+    S2.getCart(x2, y2);
+    S3.getCart(x3, y3);
+    A.getBary(w1,w2,w3);
+
+    double X = w1*x1 + w2*x2 + w3*x3;
+    double Y = w1*y1 + w2*y2 + w3*x3;
+
+    A.attrib_coord(X,Y);
 }
 
-/*int LocatePoint(Point A, double a, double b, double c, double d, Point *ListPoints, int **NT, Point *Omega){
+bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints){
+    // Renvoie un booleen si le Point A est dans le triangle k
+
+    CartToBary(A,ListPoints[NT[k][0]],ListPoints[NT[k][1]],ListPoints[NT[k][2]]);
+    double w1,w2,w3;
+    A.getBary(w1,w2,w3);
+    if(w1<0 || w2<0 || w3<0){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+int LocatePointTriangle(Point A, double a, double b, double c, double d, Point *ListPoints, int **NT){
     //La fonction renvoie le numero du triangle où est localise le Point A dans le domaine D=[a,b]*[c,d]
 
     double X,Y;
     A.getCart(X,Y);
     int k(0);   //numero du triangle contenant le Point A. On demmarre du triangle 0 pour faire la recherche
     if (X>a && X<b && Y>c && Y<d){
-
-
-
+        bool test(false);
+        while(test==false){
+            test=dansTriangle(A,k,NT,ListPoints);
+            k+=1;
+        }
     }else{
         cout<<"Le point n'est pas compris dans le domaine"<<endl;
     }
-    return k;
-}*/
+    return k-1;
+}
+
 
 double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point *Omega){
     /* Renvoie un vecteur de double qui contient tous les coefficients pour 1 triangle donne en argument
@@ -301,3 +329,4 @@ double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point 
 
     return coefInter;
 }
+
