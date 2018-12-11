@@ -220,6 +220,32 @@ void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point
     fichier.close();
 }
 
+void CartToBary( Point A, Point S1, Point S2, Point S3)
+{
+    // calcule les coordonnées barycentriques du point A par rapport au triangle de sommets S1,S2,S3
+
+    double w1,w2,w3;
+    double x1,x2,x3,y1,y2,y3,X,Y;
+
+    // recupere les coordonnées cartésiennes
+    S1.getCart(x1, y1);
+    S2.getCart(x2, y2);
+    S3.getCart(x3, y3);
+    A.getCart(X, Y);
+
+    w1 = ( (y2-y3)*(X-x3)+(x3-x2)*(Y-y3) ) / ( (y2-y3)*(x1-x3)+(x3-x2)*(y1-y3) );
+    w2 = ( (y3-y1)*(X-x3)+(x1-x3)*(Y-y3) ) / ( (y2-y3)*(x1-x3)+(x3-x2)*(y1-y3) );
+    w3 = 1 - w1 - w2;
+
+    // attribution des coordonnées barycentriques au point A
+    A.attrib_bary(w1, w2, w3);
+}
+
+void BaryToCart( Point A, Point S1, Point S2, Point S3)
+{
+    cout << "WIP" << endl;
+}
+
 /*int LocatePoint(Point A, double a, double b, double c, double d, Point *ListPoints, int **NT, Point *Omega){
     //La fonction renvoie le numero du triangle où est localise le Point A dans le domaine D=[a,b]*[c,d]
 
