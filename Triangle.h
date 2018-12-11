@@ -28,14 +28,21 @@ void CoordBaryMi(int **NT, Point* ListPoints, Point **NM, int NbTri);
 
 void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints,int NbTri, int NbPts);
 
-void CartToBary( Point &A, Point S1, Point S2, Point S3);
+void CartToBary(Point& A, Point S1, Point S2, Point S3);
 
 void BaryToCart( Point &A, Point S1, Point S2, Point S3);
 
 bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints);
 
-int LocatePointTriangle(Point A, double a, double b, double c, double d, Point *ListPoints, int **NT);
+int LocatePointTriangle(Point A, Point *ListPoints, int **NT, int nbtri);
 
 double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point *Omega);
 
+Point** MicroTriangle(int k, int **NT, Point *ListPoints, Point *Omega, Point **NM);
+
+bool dansMicroTriangle(Point& A, int t, Point **NMT);
+
+int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, int **NT, Point *Omega, Point **NM);
+
 #endif // TRIANGLE_H
+
