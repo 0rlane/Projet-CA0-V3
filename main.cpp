@@ -41,6 +41,7 @@ int main(){
 
     // calcule la matrice de tous les coefficients de chaque triangle
     double** AllCoeff = ComputeAllCoeff(NbTri, NT, ListPoints, NM, Omega);
+    // calcule la matrice de tous les sommets des microtriangles de chaque triangle
     Point*** SMT = ComputeAllSMT(NbTri, NT, ListPoints, Omega, NM);
 
     // Creation du fichier de resultats "PS.RES"
@@ -62,8 +63,12 @@ int main(){
     cout<<"Point ";NMT[microTriangle][2].affiche();*/
 
 
-    FreeMat(NT,NbTri); FreeMat(NTV,NbTri);
+    FreeMat(NT,NbTri); FreeMat(NTV,NbTri); FreeMat(AllCoeff,NbTri);
 
+    for (int i = 0; i < NbTri; ++i)
+    {
+        FreeMat(SMT[i],6);
+    }
     delete[] ListPoints;
     delete[] Omega;
     delete[] NM;
