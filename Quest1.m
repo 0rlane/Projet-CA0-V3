@@ -1,7 +1,7 @@
 load ps.pts
 load Omega.pts
 load NM.pts
-load grille.pts
+load grille1.pts
 
 N=ps(1,1);
 ps2=sortrows(ps([2:end],:));
@@ -35,4 +35,4 @@ fprintf(fid,'%d %d %d\n',tri');
 fclose(fid);
 
 figure(2);
-surf(linspace(0,3,100), linspace(0,3,100),grille);
+surf(linspace(0,3,100), linspace(0,3,100),grille1);

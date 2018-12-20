@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include <iomanip> // pour setw
 
 using namespace std;
 
@@ -196,38 +197,6 @@ void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri){
         NM[i][1].attrib_bary(alpha2, 0, 1-alpha2);
         NM[i][2].attrib_bary(1-alpha3, alpha3, 0);
      }
-}
-
-void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints, double **AllCoeff, Point*** SMT, int NbTri, int NbPts, int NumFonc){
-    // Creation du fichier PS.RES
-    double X, Y, X1, X2, X3, Y1, Y2, Y3;
-    ofstream fichier(name);
-    for (int k=0; k<NbTri; k++){
-
-        Omega[k].getCart(X,Y);
-        fichier<<k<<" "<<NT[k][0]<<" "<<NT[k][1]<<" "<<NT[k][2]<<" "<<X<<" "<<Y<<endl;
-    }
-    for (int k=0; k<NbTri; k++){
-        NM[k][0].getCart(X1,Y1);
-        NM[k][1].getCart(X2,Y2);
-        NM[k][2].getCart(X3,Y3);
-        fichier<<k<<" "<<X1<<" "<<Y1<<" "<<X2<<" "<<Y2<<" "<<X3<<" "<<Y3<<endl;
-    }
-    for (int i=0; i<NbPts; i++){
-        ListPoints[i].getCart(X,Y);
-        fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i],NumFonc)<<" "<<fpx(ListPoints[i], NumFonc)<<" "<<fpy(ListPoints[i],NumFonc)<<endl;
-    }
-
-    // valeur de l'interpolant aux points (2.5,0.8) (0.2,1.1) (2.9,2.5)
-    Point UN(2.5,0.8);
-    Point DEUX(0.2,1.1);
-    Point TROIS(2.9,2.5);
-    fichier << evalInterpolant(UN, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << " "
-            << evalInterpolant(DEUX, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << " "
-            << evalInterpolant(TROIS, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
-
-    // valeur minimum et maximum de f-S sur l'ensemble des points
-    fichier.close();
 }
 
 void CartToBary(Point& A, Point S1, Point S2, Point S3){
@@ -474,4 +443,137 @@ double** InterpolantDomaine(Point *ListPoint, int NbPts, int **NT, Point *Omega,
     }
 
     return GrilleInter;
+}
+
+
+///////////////// OUTPUT
+
+void results_ListTriangles(ostream &fichier, int NbTri, int **NT, Point *Omega){
+    double X,Y;
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Liste des triangles et des points Omega associés" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << setw(5) << "k" << setw(10) << "NT(1,k)" << setw(10) << "NT(2,k)" << setw(10) << "NT(3,k)" << setw(10) << "X_omega" 
+            << setw(10) << "Y_omega" << endl;
+    for (int k=0; k<NbTri; k++){
+        Omega[k].getCart(X,Y);
+        fichier << setw(5) << k << setw(10) << NT[k][0] << setw(10) << NT[k][1] << setw(10) << NT[k][2] << setw(10) << X 
+                << setw(10) << Y << endl;
+    }
+}
+void results_ListPoints(ostream &fichier, int NbTri, Point **NM){
+    double X, Y, X1, X2, X3, Y1, Y2, Y3;
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Liste des points Mi pour chaque triangle" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << setw(5) << "k" << setw(10) << "x(M1)" << setw(10) << "y(M1)" << setw(10) << "x(M2)" << setw(10) << "y(M2)" 
+            << setw(10) << "x(M3)" << setw(10) << "y(M3)" << endl;
+    for (int k=0; k<NbTri; k++){
+        NM[k][0].getCart(X1,Y1);
+        NM[k][1].getCart(X2,Y2);
+        NM[k][2].getCart(X3,Y3);
+        fichier << setw(5) << k << setw(10) << X1 << setw(10) << Y1 << setw(10) << X2 << setw(10) << Y2 << setw(10) << X3 
+                << setw(10) << Y3 << endl;
+    }
+}
+void results_ValFonc(ostream &fichier, int NumFonc, int NbPts, Point *ListPoints){
+    double X,Y;
+    fichier << endl << "----------------------- FONCTION N°" << NumFonc << " -------------------------------" << endl << endl;
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Liste des N points et valeurs de la fonction" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << setw(5) << "i" << setw(10) << "xi" << setw(10) << "yi" << setw(10) << "f(xi,yi)" << setw(10) << "df/dx" 
+            << setw(10) << "df/dy" << endl;
+    for (int i=0; i<NbPts; i++){
+        ListPoints[i].getCart(X,Y);
+        fichier << setw(5) << i << setw(10) << X << setw(10) << Y << setw(10) << f(ListPoints[i],NumFonc) << setw(10) 
+                << fpx(ListPoints[i], NumFonc) << setw(10) << fpy(ListPoints[i],NumFonc) << endl;
+    }
+}
+void results_Interpol(ostream &fichier, int NbTri, int NumFonc, Point *ListPoints, int **NT, Point *Omega, Point **NM, 
+                      double **AllCoeff, Point*** SMT){
+    Point UN(2.5,0.8), DEUX(0.2,1.1), TROIS(2.9,2.5);
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Valeur de l'interpolant aux points :" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "(2.5,0.8) : " << evalInterpolant(UN, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
+    fichier << "(0.2,1.1) : " << evalInterpolant(DEUX, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
+    fichier << "(2.9,2.5) : " << evalInterpolant(TROIS, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
+}
+void results_Erreur(ostream &fichier, int NumFonc, Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, 
+                    int NbTri, double **AllCoeff, Point ***SMT){
+
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Valeur minimum et maximum de f-S sur les points de visualisation" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+
+    // Calcul des a, b, c et d qui definissent la taille du domaine
+    double a, b, c, d;
+    double x0, y0, xi, yi;
+    ListPoint[0].getCart(x0,y0);
+    a=x0; b=x0;
+    c=y0; d=y0;
+    for(int i=1; i<NbPts; i++){
+        ListPoint[i].getCart(xi,yi);
+        a=min(a,xi);
+        b=max(b,xi);
+        c=min(c,yi);
+        d=max(d,yi);
+    }
+
+    double hx((b-a)/100); //pas entre chaque point de la grille par rapport a l'axe x
+    double hy((d-c)/100); //pas entre chaque point de la grille par rapport a l'axe y
+
+    Point grille;
+    double x, y, F, S;
+    double erreur_max(-100), erreur_min(100);
+
+    for(int i=0; i<100; i++){    //boucle sur l'axe x
+        x = (double) (i*hx);
+        for(int j=0; j<100; j++){   // boucle sur l'axe y
+            y = (double)(j*hy);
+            grille.attrib_coord(x,y);
+
+            F = f(grille, NumFonc);
+            S = evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri);
+
+            erreur_min = min(erreur_min,(F-S));
+            erreur_max = max(erreur_min,(F-S));
+        }
+    }
+
+    fichier << "erreur min = " << erreur_min << endl;
+    fichier << "erreur max = " << erreur_max << endl;
+}
+
+void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints, double **AllCoeff, Point*** SMT, int NbTri, int NbPts, int NumFonc){
+    // Creation du fichier PS.RES
+    double X, Y, X1, X2, X3, Y1, Y2, Y3;
+    ofstream fichier(name);
+    for (int k=0; k<NbTri; k++){
+
+        Omega[k].getCart(X,Y);
+        fichier<<k<<" "<<NT[k][0]<<" "<<NT[k][1]<<" "<<NT[k][2]<<" "<<X<<" "<<Y<<endl;
+    }
+    for (int k=0; k<NbTri; k++){
+        NM[k][0].getCart(X1,Y1);
+        NM[k][1].getCart(X2,Y2);
+        NM[k][2].getCart(X3,Y3);
+        fichier<<k<<" "<<X1<<" "<<Y1<<" "<<X2<<" "<<Y2<<" "<<X3<<" "<<Y3<<endl;
+    }
+    for (int i=0; i<NbPts; i++){
+        ListPoints[i].getCart(X,Y);
+        fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i],NumFonc)<<" "<<fpx(ListPoints[i], NumFonc)<<" "<<fpy(ListPoints[i],NumFonc)<<endl;
+    }
+
+    // valeur de l'interpolant aux points (2.5,0.8) (0.2,1.1) (2.9,2.5)
+    Point UN(2.5,0.8);
+    Point DEUX(0.2,1.1);
+    Point TROIS(2.9,2.5);
+    fichier << evalInterpolant(UN, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << " "
+            << evalInterpolant(DEUX, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << " "
+            << evalInterpolant(TROIS, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
+
+    // valeur minimum et maximum de f-S sur l'ensemble des points
+    fichier.close();
 }
