@@ -28,9 +28,9 @@ void CoordBaryMi(int **NT, Point* ListPoints, Point **NM, int NbTri);
 
 void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints,int NbTri, int NbPts);
 
-void CartToBary(Point& A, Point S1, Point S2, Point S3);
+void CartToBary( Point &A, Point S1, Point S2, Point S3);
 
-void BaryToCart( Point& A, Point S1, Point S2, Point S3);
+void BaryToCart( Point &A, Point S1, Point S2, Point S3);
 
 bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints);
 
@@ -42,12 +42,14 @@ double** ComputeAllCoeff(int NbTri, int **NT, Point *ListPoints, Point **NM, Poi
 
 double foncInterpolant(Point M, Point** MicroTriangles, int l, double *Coeffs);
 
-double evalInterpolant(Point I, Point *ListPoints, int **NT, Point *Omega, Point **NM, int NbTri);
-
 Point** MicroTriangle(int k, int **NT, Point *ListPoints, Point *Omega, Point **NM);
 
 bool dansMicroTriangle(Point& A, int t, Point **NMT);
 
 int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, int **NT, Point *Omega, Point **NM);
+
+double evalInterpolant(Point I, Point *ListPoints, int **NT, Point *Omega, Point **NM, int NbTri);
+
+
 
 #endif // TRIANGLE_H
