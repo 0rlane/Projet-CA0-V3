@@ -348,10 +348,11 @@ double foncInterpolant(Point M, Point** MicroTriangles, int l, double *Coeffs){
     // Fonction qui calcule la valeur de L'interpolant à partir du numéro de micro triangle
     // l : numéro du micro-triangle
     // Coeffs : liste des 19 coefficients du triangle T
-    int i,j,k;
-    bool cas=l%2==0; // True si l = 2i
 
-    if (cas) { i=l/2; }
+    int i,j,k;
+    bool cas(l%2==0); // True si l = 2i
+
+    if (cas) { i=(l)/2; }
     else { i = (l-1)/2; }
     j = (i+1)%3;
     k = (i+2)%3;
@@ -362,23 +363,23 @@ double foncInterpolant(Point M, Point** MicroTriangles, int l, double *Coeffs){
     CartToBary(M,MicroTriangles[l][0],MicroTriangles[l][1],MicroTriangles[l][2]);
     M.getBary(w1,w2,w3);
 
-    if (cas)
+    if (!cas)
     {
-        double mk = Coeffs[14+k];
-        double ek = Coeffs[11+k];
+        double mk = Coeffs[15+k];
+        double ek = Coeffs[12+k];
         double w = Coeffs[18];
-        double bi = Coeffs[2+i];
-        double di = Coeffs[8+i];
+        double bi = Coeffs[3+i];
+        double di = Coeffs[9+i];
         double ai = Coeffs[0+i];
         Interpolant = mk*w3*w3 + ek*2*w2*w3 + w*w2*w2 + bi*2*w1*w3 + di*2*w1*w2 + ai*w1*w1;
     }
     else
     {
-        double mj = Coeffs[14+j];
-        double ej = Coeffs[11+j];
+        double mj = Coeffs[15+j];
+        double ej = Coeffs[12+j];
         double w = Coeffs[18];
-        double ci = Coeffs[5+i];
-        double di = Coeffs[8+i];
+        double ci = Coeffs[6+i];
+        double di = Coeffs[9+i];
         double ai = Coeffs[0+i];
         Interpolant = mj*w3*w3 + ej*2*w2*w3 + w*w2*w2 + ci*2*w1*w3 + di*2*w1*w2 + ai*w1*w1;
     }
@@ -408,7 +409,7 @@ Point** MicroTriangle(int k, int **NT, Point *ListPoints, Point *Omega, Point **
 
     for (int i=0; i<3; i++){
         NMT[i+j][0]=ListPoints[NT[k][i]-1]; NMT[i+j][1]=Omega[k]; NMT[i+j][2]=NM[k][(i+1)%3];
-        NMT[i+1+j][0]=ListPoints[NT[k][i]-1]; NMT[i+1+j][1]=NM[k][(i+2)%3]; NMT[i+1+j][2]=Omega[k];
+        NMT[i+1+j][0]=ListPoints[NT[k][i]-1]; NMT[i+1+j][1]=Omega[k]; NMT[i+1+j][2]=NM[k][(i+2)%3];
         j++;
     }
 
