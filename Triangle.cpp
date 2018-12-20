@@ -198,7 +198,7 @@ void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri){
      }
 }
 
-void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints, double **AllCoeff, Point*** SMT, int NbTri, int NbPts){
+void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints, double **AllCoeff, Point*** SMT, int NbTri, int NbPts, int NumFonc){
     // Creation du fichier PS.RES
     double X, Y, X1, X2, X3, Y1, Y2, Y3;
     ofstream fichier(name);
@@ -215,7 +215,7 @@ void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point
     }
     for (int i=0; i<NbPts; i++){
         ListPoints[i].getCart(X,Y);
-        fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i])<<" "<<fpx(ListPoints[i])<<" "<<fpy(ListPoints[i])<<endl;
+        fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i],NumFonc)<<" "<<fpx(ListPoints[i], NumFonc)<<" "<<fpy(ListPoints[i],NumFonc)<<endl;
     }
 
     // valeur de l'interpolant aux points (2.5,0.8) (0.2,1.1) (2.9,2.5)
@@ -289,7 +289,10 @@ int LocatePointTriangle(Point A, Point *ListPoints, int **NT, int nbtri){
     return k-1;
 }
 
-double** ComputeAllCoeff(int NbTri, int **NT, Point *ListPoints, Point **NM, Point *Omega){
+double** ComputeAllCoeff(int NbTri, int NumFonc, int **NT, Point *ListPoints, Point **NM, Point *Omega){
+    // NumFonc : numéro de la fonction a interpoler :
+    //      - 1 = exponentielle
+    //      - 2 = polynomiale
 
     double** AllCoeffs = new double*[NbTri];
 
@@ -299,11 +302,11 @@ double** ComputeAllCoeff(int NbTri, int **NT, Point *ListPoints, Point **NM, Poi
 
         double p, q, r, a, b, alpha, w1, w2, w3;
         for (int i=0; i<3; i++){
-            p=multPointsCart(gradf(ListPoints[NT[k][i]-1]),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+1)%3]));  //Initialisation du point pi
-            q=multPointsCart(gradf(ListPoints[NT[k][i]-1]),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+2)%3]));  //Initialisation du point qi
-            r=multPointsCart(gradf(ListPoints[NT[k][i]-1]),calcVect(ListPoints[NT[k][i]-1],Omega[k]));  //Initialisation du point ri
+            p=multPointsCart(gradf(ListPoints[NT[k][i]-1],NumFonc),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+1)%3]));  //Initialisation du point pi
+            q=multPointsCart(gradf(ListPoints[NT[k][i]-1],NumFonc),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+2)%3]));  //Initialisation du point qi
+            r=multPointsCart(gradf(ListPoints[NT[k][i]-1],NumFonc),calcVect(ListPoints[NT[k][i]-1],Omega[k]));  //Initialisation du point ri
 
-            AllCoeffs[k][i]=f(ListPoints[NT[k][i]-1]);   // Initialisation des coefficients ai
+            AllCoeffs[k][i]=f(ListPoints[NT[k][i]-1],NumFonc);   // Initialisation des coefficients ai
             AllCoeffs[k][i+3]=AllCoeffs[k][i]+q/2;   //Initialisation des coefficients bi
             AllCoeffs[k][i+6]=AllCoeffs[k][i]+p/2;   //Initialisation des coefficients ci
             AllCoeffs[k][i+9]=AllCoeffs[k][i]+r/2;   //Initialisation des coefficients di

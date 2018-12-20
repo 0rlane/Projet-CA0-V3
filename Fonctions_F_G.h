@@ -7,25 +7,12 @@
 #include <fstream>
 #include <math.h>
 
-double f(Point A);
+double f(Point A, int numero_fonction);
 
-double fpx(Point A);
+double fpx(Point A, int numero_fonction);
 
-double fpy(Point A);
+double fpy(Point A, int numero_fonction);
 
-Point gradf(Point A);
-
-double g(Point A);
-
-double gpx(Point A);
-
-double gpy(Point A);
-
-Point gradg(Point A);
-
-double** initF(int NbPts, Point* ListPoints);
-
-double** initG(int NbPts, Point* ListPoints);
-
+Point gradf(Point A, int numero_fonction);
 
 #endif // FONCTION_F_G_H
