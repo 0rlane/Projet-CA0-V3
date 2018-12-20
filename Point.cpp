@@ -121,4 +121,3 @@ Point calcVect(Point A, Point B){
     Point C(xB-xA,yB-yA);
     return C;
 }
-

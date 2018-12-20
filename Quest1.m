@@ -9,13 +9,15 @@ hold on;
 trimesh(tri,ps2(:,2),ps2(:,3),zeros(size(ps2(:,2))));
 
 % Affichage des centres inscrit des triangles
-plot(Omega(:,1),Omega(:,2),'ro')
+%plot(Omega(:,1),Omega(:,2),'ro')
+plot(0.604184,0.254753,'ro')
 
 % Affichage des Mi
-plot([NM(:,1);NM(:,3);NM(:,5)],[NM(:,2);NM(:,4);NM(:,6)],'b+')
+%plot([NM(:,1);NM(:,3);NM(:,5)],[NM(:,2);NM(:,4);NM(:,6)],'b+')
+plot([0.459499,0.45,0.838668],[0.471281,0,0.408879],'b+');
+
+plot([0.9,0.78,0],[0,0.8,0],'g*')
 hold off;
-
-
 
 % Generation d'un fichier de doubles contenant les corrdonnees des points
 % dans l'odre des sommets

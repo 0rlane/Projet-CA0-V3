@@ -38,6 +38,12 @@ int LocatePointTriangle(Point A, Point *ListPoints, int **NT, int nbtri);
 
 double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point *Omega);
 
+double** ComputeAllCoeff(int NbTri, int **NT, Point *ListPoints, Point **NM, Point *Omega);
+
+double foncInterpolant(Point M, Point** MicroTriangles, int l, double *Coeffs);
+
+double evalInterpolant(Point I, Point *ListPoints, int **NT, Point *Omega, Point **NM, int NbTri);
+
 Point** MicroTriangle(int k, int **NT, Point *ListPoints, Point *Omega, Point **NM);
 
 bool dansMicroTriangle(Point& A, int t, Point **NMT);
