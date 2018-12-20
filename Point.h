@@ -33,4 +33,3 @@ Point calcVect(Point A, Point B);
 
 #endif // POINT_H
 
-

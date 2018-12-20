@@ -72,4 +72,3 @@ template<typename Type> Type multVect(Type *A, Type *B, int sA, int sB){
 }
 
 #endif // MATRICE_H
-

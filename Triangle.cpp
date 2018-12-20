@@ -64,7 +64,7 @@ void CalculCoeff(double &a1, double &b1, double &c1, Point A, Point B){
 }
 
 Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1, double c2){
-    // Calcul les corrdonnÃ©es X et Y d'intersection des deux droites de coeff a,b,c
+    // Calcul les corrdonnées X et Y d'intersection des deux droites de coeff a,b,c
 
     Point inter;
     double X, Y;
@@ -84,7 +84,7 @@ Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1,
         X = -c2/a2;
         Y = (-a1/b1)*X-c1/b1;
     }
-    else // b1 et b2 ne sont pas sensÃ© etre nuls tous les deux
+    else // b1 et b2 ne sont pas sensé etre nuls tous les deux
     cout << "erreur dans IntersectionDroites" << endl;
 
     inter.attrib_coord(X,Y);
@@ -182,7 +182,7 @@ void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri){
         A2 = ListPoints[NT[i][1]-1];
         A3 = ListPoints[NT[i][2]-1];
 
-         // Recuperation des coordonnÃ©es des 3 Mi du triangle i
+         // Recuperation des coordonnées des 3 Mi du triangle i
         M1 = NM[i][0];
         M2 = NM[i][1];
         M3 = NM[i][2];
@@ -191,7 +191,7 @@ void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri){
         alpha2 = DistEucl(A1,M3) / DistEucl(A1,A2);
         alpha3 = DistEucl(A3,M2) / DistEucl(A3,A1);
 
-         // Attribution des coordonnÃ©es barycentriques aux points Mi
+         // Attribution des coordonnées barycentriques aux points Mi
         NM[i][0].attrib_bary(0, 1-alpha1, alpha1);
         NM[i][1].attrib_bary(alpha2, 0, 1-alpha2);
         NM[i][2].attrib_bary(1-alpha3, alpha3, 0);
@@ -217,16 +217,26 @@ void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point
         ListPoints[i].getCart(X,Y);
         fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i])<<" "<<fpx(ListPoints[i])<<" "<<fpy(ListPoints[i])<<endl;
     }
+
+    // valeur de l'interpolant aux points (2.5,0.8) (0.2,1.1) (2.9,2.5)
+    Point UN(2.5,0.8);
+    Point DEUX(0.2,1.1);
+    Point TROIS(2.9,2.5);
+    fichier << evalInterpolant(UN, ListPoints, NT, Omega, NM, NbTri) << " "
+            << evalInterpolant(DEUX, ListPoints, NT, Omega, NM, NbTri) << " "
+            << evalInterpolant(TROIS, ListPoints, NT, Omega, NM, NbTri) << endl;
+
+    // valeur minimum et maximum de f-S sur l'ensemble des points
     fichier.close();
 }
 
 void CartToBary(Point& A, Point S1, Point S2, Point S3){
-    // calcule les coordonnÃ©es barycentriques du point A par rapport au triangle de sommets S1,S2,S3
+    // calcule les coordonnées barycentriques du point A par rapport au triangle de sommets S1,S2,S3
 
     double w1,w2,w3;
     double x1,x2,x3,y1,y2,y3,X,Y;
 
-    // recupere les coordonnÃ©es cartÃ©siennes
+    // recupere les coordonnées cartésiennes
     S1.getCart(x1, y1);
     S2.getCart(x2, y2);
     S3.getCart(x3, y3);
@@ -236,12 +246,12 @@ void CartToBary(Point& A, Point S1, Point S2, Point S3){
     w2 = ( (y3-y1)*(X-x3)+(x1-x3)*(Y-y3) ) / ( (y2-y3)*(x1-x3)+(x3-x2)*(y1-y3) );
     w3 = 1 - w1 - w2;
 
-    // attribution des coordonnÃ©es barycentriques au point A
+    // attribution des coordonnées barycentriques au point A
     A.attrib_bary(w1, w2, w3);
 }
 
 void BaryToCart( Point &A, Point S1, Point S2, Point S3){
-    // calcule les coordonnÃ©es cartesiennes d'un point A par rapport au triangle de sommet S1,S2,S3
+    // calcule les coordonnées cartesiennes d'un point A par rapport au triangle de sommet S1,S2,S3
      double w1,w2,w3;
     double x1,x2,x3,y1,y2,y3;
 
@@ -249,7 +259,7 @@ void BaryToCart( Point &A, Point S1, Point S2, Point S3){
     S2.getCart(x2, y2);
     S3.getCart(x3, y3);
     A.getBary(w1,w2,w3);
-    double X = w1*x1 + w2*x2 + w3*x3;
+     double X = w1*x1 + w2*x2 + w3*x3;
     double Y = w1*y1 + w2*y2 + w3*x3;
      A.attrib_coord(X,Y);
 }
@@ -268,7 +278,7 @@ bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints){
 }
 
 int LocatePointTriangle(Point A, Point *ListPoints, int **NT, int nbtri){
-    //La fonction renvoie le numero du triangle oÃ¹ est localise le Point A dans le domaine D=[a,b]*[c,d]
+    //La fonction renvoie le numero du triangle où est localise le Point A dans le domaine D=[a,b]*[c,d]
 
     int k(0);   //numero du triangle contenant le Point A. On demmarre du triangle 0 pour faire la recherche
     bool test(false);
@@ -292,22 +302,26 @@ double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point 
 
     double p, q, r, a, b, alpha, w1, w2, w3;
     for (int i=0; i<3; i++){
-        p=multPointsCart(gradf(ListPoints[NT[k][i]]),calcVect(ListPoints[NT[k][i]],NM[k][(i+1)%3]));  //Initialisation du point pi
-        q=multPointsCart(gradf(ListPoints[NT[k][i]]),calcVect(ListPoints[NT[k][i]],NM[k][(i+2)%3]));  //Initialisation du point qi
-        r=multPointsCart(gradf(ListPoints[NT[k][i]]),calcVect(ListPoints[NT[k][i]],Omega[k]));  //Initialisation du point ri
+        p=multPointsCart(gradf(ListPoints[NT[k][i]-1]),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+1)%3]));  //Initialisation du point pi
+        q=multPointsCart(gradf(ListPoints[NT[k][i]-1]),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+2)%3]));  //Initialisation du point qi
+        r=multPointsCart(gradf(ListPoints[NT[k][i]-1]),calcVect(ListPoints[NT[k][i]-1],Omega[k]));  //Initialisation du point ri
 
-        coefInter[i]=f(ListPoints[NT[k][i]]);   // Initialisation des coefficients ai
+        coefInter[i]=f(ListPoints[NT[k][i]-1]);   // Initialisation des coefficients ai
         coefInter[i+3]=coefInter[i]+q/2;   //Initialisation des coefficients bi
         coefInter[i+6]=coefInter[i]+p/2;   //Initialisation des coefficients ci
         coefInter[i+9]=coefInter[i]+r/2;   //Initialisation des coefficients di
-
+    }
+    for (int i=0; i<3; i++){
         switch (i){
         case 0:
             NM[k][0].getBary(b,a,alpha);
+            break;
         case 1:
             NM[k][1].getBary(alpha,b,a);
+            break;
         case 2:
             NM[k][2].getBary(a,alpha,b);
+            break;
         }
         Omega[k].getBary(w1,w2,w3);
 
@@ -319,13 +333,79 @@ double* CoefInterpolation(int k, int **NT, Point *ListPoints, Point **NM, Point 
     return coefInter;
 }
 
+double** ComputeAllCoeff(int NbTri, int **NT, Point *ListPoints, Point **NM, Point *Omega){
+    double** AllCoeffs = new double*[NbTri];
+
+    for (int i = 0; i < NbTri; ++i)
+    {
+        AllCoeffs[i] = CoefInterpolation(i, NT, ListPoints, NM, Omega);
+    }
+
+    return AllCoeffs;
+}
+
+double foncInterpolant(Point M, Point** MicroTriangles, int l, double *Coeffs){
+    // Fonction qui calcule la valeur de L'interpolant à partir du numéro de micro triangle
+    // l : numéro du micro-triangle
+    // Coeffs : liste des 19 coefficients du triangle T
+    int i,j,k;
+    bool cas=l%2==0; // True si l = 2i
+
+    if (cas) { i=l/2; }
+    else { i = (l-1)/2; }
+    j = (i+1)%3;
+    k = (i+2)%3;
+
+    double Interpolant;
+    double w1,w2,w3;
+
+    CartToBary(M,MicroTriangles[l][0],MicroTriangles[l][1],MicroTriangles[l][2]);
+    M.getBary(w1,w2,w3);
+
+    if (cas)
+    {
+        double mk = Coeffs[14+k];
+        double ek = Coeffs[11+k];
+        double w = Coeffs[18];
+        double bi = Coeffs[2+i];
+        double di = Coeffs[8+i];
+        double ai = Coeffs[0+i];
+        Interpolant = mk*w3*w3 + ek*2*w2*w3 + w*w2*w2 + bi*2*w1*w3 + di*2*w1*w2 + ai*w1*w1;
+    }
+    else
+    {
+        double mj = Coeffs[14+j];
+        double ej = Coeffs[11+j];
+        double w = Coeffs[18];
+        double ci = Coeffs[5+i];
+        double di = Coeffs[8+i];
+        double ai = Coeffs[0+i];
+        Interpolant = mj*w3*w3 + ej*2*w2*w3 + w*w2*w2 + ci*2*w1*w3 + di*2*w1*w2 + ai*w1*w1;
+    }
+
+    return Interpolant;
+}
+
+double evalInterpolant(Point I, Point *ListPoints, int **NT, Point *Omega, Point **NM, int NbTri){
+    // fonction qui évalue la valeur de l'interpolant au point quelconque I
+
+    int numTriangle = LocatePointTriangle(I, ListPoints, NT, NbTri);
+    double* Coeffs = CoefInterpolation(numTriangle, NT, ListPoints,NM, Omega);
+    Point** PtsMicroTriangle = MicroTriangle(numTriangle, NT, ListPoints, Omega, NM);
+
+    int numMicroTriangle = LocatePointMicroTriangle(I, ListPoints, numTriangle, NT, Omega, NM);
+
+    double val = foncInterpolant(I, PtsMicroTriangle, numMicroTriangle, Coeffs);
+
+    return val;
+}
+
 Point** MicroTriangle(int k, int **NT, Point *ListPoints, Point *Omega, Point **NM){
     // Renvoie une matrice de Point (6*3) qui renvoie les sommets de chaque microtriangle dans un triangle
 
     Point **NMT=CreateMat<Point>(6,3);
     int j(0);
 
- 
     for (int i=0; i<3; i++){
         NMT[i+j][0]=ListPoints[NT[k][i]-1]; NMT[i+j][1]=Omega[k]; NMT[i+j][2]=NM[k][(i+1)%3];
         NMT[i+1+j][0]=ListPoints[NT[k][i]-1]; NMT[i+1+j][1]=NM[k][(i+2)%3]; NMT[i+1+j][2]=Omega[k];
@@ -349,7 +429,7 @@ bool dansMicroTriangle(Point& A, int t, Point **NMT){
 }
 
 int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, int **NT, Point *Omega, Point **NM){
-    //La fonction renvoie le numero du micro triangle oÃ¹ est localise le Point A dans le triangle k
+    //La fonction renvoie le numero du micro triangle où est localise le Point A dans le triangle k
 
     Point **NMT=MicroTriangle(k,NT,ListPoints,Omega,NM);
     bool test(false);
@@ -360,5 +440,3 @@ int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, int **NT, Point 
     }
     return t-1;
 }
-
-

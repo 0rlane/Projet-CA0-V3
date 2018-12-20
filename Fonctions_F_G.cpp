@@ -95,4 +95,3 @@ double** initG(int NbPts, Point* ListPoints){
     }
     return G;
 }
-
