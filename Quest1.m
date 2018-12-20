@@ -14,6 +14,7 @@ plot(Omega(:,1),Omega(:,2),'ro')
 % Affichage des Mi
 plot([NM(:,1);NM(:,3);NM(:,5)],[NM(:,2);NM(:,4);NM(:,6)],'b+')
 
+plot([2.5,0.2,2.9],[0.8,1.1,2.5],'g*')
 hold off;
 
 % Generation d'un fichier de doubles contenant les corrdonnees des points
