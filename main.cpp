@@ -39,8 +39,12 @@ int main(){
         afficheCoordPoints(NM[i], 3);
     }*/
 
+    // calcule la matrice de tous les coefficients de chaque triangle
+    double** AllCoeff = ComputeAllCoeff(NbTri, NT, ListPoints, NM, Omega);
+    Point*** SMT = ComputeAllSMT(NbTri, NT, ListPoints, Omega, NM);
+
     // Creation du fichier de resultats "PS.RES"
-    CreatFileResults("PS.RES",NT,Omega,NM,ListPoints,NbTri,NbPts);
+    CreatFileResults("PS.RES",NT,Omega,NM,ListPoints,AllCoeff,SMT,NbTri,NbPts);
 
     /*Point A(0.2,1.1);
     int triangle=LocatePointTriangle(A,ListPoints,NT,NbTri);
