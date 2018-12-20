@@ -460,15 +460,14 @@ double** InterpolantDomaine(Point *ListPoint, int NbPts, int **NT, Point *Omega,
     double hx((b-a)/100); //pas entre chaque point de la grille par rapport a l'axe x
     double hy((d-c)/100); //pas entre chaque point de la grille par rapport a l'axe y
     Point grille;
-    double x(0), y(0);
+    double x(0.), y(0.);
     for(int i=0; i<100; i++){    //boucle sur l'axe x
-        y=0;
+        x = (double) (i*hx);
         for(int j=0; j<100; j++){   // boucle sur l'axe y
+            y = (double)(j*hy);
             grille.attrib_coord(x,y);
             GrilleInter[i][j]=evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri);
-            y+=hy;
         }
-        x+=hx;
     }
 
     return GrilleInter;
