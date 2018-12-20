@@ -1,7 +1,7 @@
 load ps.pts
 load Omega.pts
 load NM.pts
-load grille.ps
+load grille.pts
 
 N=ps(1,1);
 ps2=sortrows(ps([2:end],:));

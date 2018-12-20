@@ -73,7 +73,7 @@ int main(){
 
     double **Grille;
     Grille=InterpolantDomaine(ListPoints,NbPts, NT,Omega,NM,NbTri,AllCoeff,SMT);
-    ofstream fichier("grille.ps");
+    ofstream fichier("grille.pts");
     for(int i=0; i<100; i++){
         for(int j=0; j<100; j++){
             fichier<<Grille[i][j]<<" ";
