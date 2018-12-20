@@ -7,10 +7,14 @@
 
 using namespace std;
 
-
-int main(){
+int main(int argc, char const *argv[]){
     int NbPts;  // nombre de points dans le domaine D
     int NbTri;  // nombre de triangles dans le domaine D
+
+    // Numéro de la fonction :
+    //      1) fonction exponentielle
+    //      2) fonction polynomiale
+    int NumFonc = 1;
 
     // Creation d'un vecteur de nbPts Point contenant tous les points du domaine D
     Point* ListPoints=LecPoints("points.pts",NbPts);
@@ -40,11 +44,11 @@ int main(){
     }*/
 
     // calcule la matrice de tous les coefficients de chaque triangle
-    double** AllCoeff = ComputeAllCoeff(NbTri, NT, ListPoints, NM, Omega);
+    double** AllCoeff = ComputeAllCoeff(NbTri, NumFonc, NT, ListPoints, NM, Omega);
     Point*** SMT = ComputeAllSMT(NbTri, NT, ListPoints, Omega, NM);
 
     // Creation du fichier de resultats "PS.RES"
-    CreatFileResults("PS.RES",NT,Omega,NM,ListPoints,AllCoeff,SMT,NbTri,NbPts);
+    CreatFileResults("PS.RES",NT,Omega,NM,ListPoints,AllCoeff,SMT,NbTri,NbPts,NumFonc);
 
     /*Point A(0.2,1.1);
     int triangle=LocatePointTriangle(A,ListPoints,NT,NbTri);
@@ -83,7 +87,12 @@ int main(){
     fichier.close();
 
 
-    FreeMat(NT,NbTri); FreeMat(NTV,NbTri);
+    FreeMat(NT,NbTri); FreeMat(NTV,NbTri); FreeMat(AllCoeff,NbTri);
+
+    for (int i = 0; i < NbTri; ++i)
+    {
+        FreeMat(SMT[i],6);
+    }
 
     delete[] ListPoints;
     delete[] Omega;
