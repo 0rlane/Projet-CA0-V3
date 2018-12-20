@@ -1,6 +1,7 @@
 load ps.pts
 load Omega.pts
 load NM.pts
+load grille.ps
 
 N=ps(1,1);
 ps2=sortrows(ps([2:end],:));
@@ -13,8 +14,6 @@ plot(Omega(:,1),Omega(:,2),'ro')
 
 % Affichage des Mi
 plot([NM(:,1);NM(:,3);NM(:,5)],[NM(:,2);NM(:,4);NM(:,6)],'b+')
-
-plot([2.5,0.2,2.9],[0.8,1.1,2.5],'g*')
 hold off;
 
 % Generation d'un fichier de doubles contenant les corrdonnees des points
@@ -34,3 +33,6 @@ if (fid < 0) error([message,' (fichier ',fictri,')']), end
 fprintf(fid,'%d\n',length(tri));
 fprintf(fid,'%d %d %d\n',tri');
 fclose(fid);
+
+figure(2);
+surf(linspace(0,3,100), linspace(0,3,100),grille);
