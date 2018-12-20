@@ -41,7 +41,6 @@ int main(){
 
     // calcule la matrice de tous les coefficients de chaque triangle
     double** AllCoeff = ComputeAllCoeff(NbTri, NT, ListPoints, NM, Omega);
-    // calcule la matrice de tous les sommets des microtriangles de chaque triangle
     Point*** SMT = ComputeAllSMT(NbTri, NT, ListPoints, Omega, NM);
 
     // Creation du fichier de resultats "PS.RES"
@@ -62,13 +61,30 @@ int main(){
     cout<<"Point ";NMT[microTriangle][1].affiche();
     cout<<"Point ";NMT[microTriangle][2].affiche();*/
 
-
-    FreeMat(NT,NbTri); FreeMat(NTV,NbTri); FreeMat(AllCoeff,NbTri);
-
-    for (int i = 0; i < NbTri; ++i)
-    {
-        FreeMat(SMT[i],6);
+    /*cout<<"Di: "<<endl;
+    for(int i=15; i<18; i++){
+        cout<<AllCoeff[8][i]<<" ";
     }
+    cout<<endl;
+
+    cout<<"M1: "; NM[8][0].affiche(); cout<<endl;
+    cout<<"M2: "; NM[8][1].affiche(); cout<<endl;
+    cout<<"M3: "; NM[8][2].affiche(); cout<<endl;*/
+
+    double **Grille;
+    Grille=InterpolantDomaine(ListPoints,NbPts, NT,Omega,NM,NbTri,AllCoeff,SMT);
+    ofstream fichier("grille.ps");
+    for(int i=0; i<100; i++){
+        for(int j=0; j<100; j++){
+            fichier<<Grille[i][j]<<" ";
+        }
+        fichier<<endl;
+    }
+    fichier.close();
+
+
+    FreeMat(NT,NbTri); FreeMat(NTV,NbTri);
+
     delete[] ListPoints;
     delete[] Omega;
     delete[] NM;

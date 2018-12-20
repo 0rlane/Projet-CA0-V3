@@ -192,9 +192,9 @@ void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri){
         alpha3 = DistEucl(A3,M2) / DistEucl(A3,A1);
 
          // Attribution des coordonnées barycentriques aux points Mi
-        NM[i][0].attrib_bary(0.,(1.-alpha1), alpha1);
-        NM[i][1].attrib_bary(alpha2, 0.,(1.-alpha2));
-        NM[i][2].attrib_bary((1.-alpha3), alpha3, 0.);
+        NM[i][0].attrib_bary(0, 1-alpha1, alpha1);
+        NM[i][1].attrib_bary(alpha2, 0, 1-alpha2);
+        NM[i][2].attrib_bary(1-alpha3, alpha3, 0);
      }
 }
 
@@ -252,16 +252,16 @@ void CartToBary(Point& A, Point S1, Point S2, Point S3){
 
 void BaryToCart( Point &A, Point S1, Point S2, Point S3){
     // calcule les coordonnées cartesiennes d'un point A par rapport au triangle de sommet S1,S2,S3
-    double w1,w2,w3;
+     double w1,w2,w3;
     double x1,x2,x3,y1,y2,y3;
 
     S1.getCart(x1, y1);
     S2.getCart(x2, y2);
     S3.getCart(x3, y3);
     A.getBary(w1,w2,w3);
-    double X = w1*x1 + w2*x2 + w3*x3;
+     double X = w1*x1 + w2*x2 + w3*x3;
     double Y = w1*y1 + w2*y2 + w3*x3;
-    A.attrib_coord(X,Y);
+     A.attrib_coord(X,Y);
 }
 
 bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints){
@@ -290,7 +290,7 @@ int LocatePointTriangle(Point A, Point *ListPoints, int **NT, int nbtri){
 }
 
 double** ComputeAllCoeff(int NbTri, int **NT, Point *ListPoints, Point **NM, Point *Omega){
-    
+
     double** AllCoeffs = new double*[NbTri];
 
     for (int k = 0; k < NbTri; ++k)
@@ -308,23 +308,30 @@ double** ComputeAllCoeff(int NbTri, int **NT, Point *ListPoints, Point **NM, Poi
             AllCoeffs[k][i+6]=AllCoeffs[k][i]+p/2;   //Initialisation des coefficients ci
             AllCoeffs[k][i+9]=AllCoeffs[k][i]+r/2;   //Initialisation des coefficients di
         }
+
         for (int i=0; i<3; i++){
             switch (i){
             case 0:
                 NM[k][0].getBary(b,a,alpha);
                 break;
-            case 1:
+            case 2:
                 NM[k][1].getBary(alpha,b,a);
                 break;
-            case 2:
+            case 1:
                 NM[k][2].getBary(a,alpha,b);
                 break;
             }
-            Omega[k].getBary(w1,w2,w3);
 
             AllCoeffs[k][i+12]=alpha*AllCoeffs[k][9+(i+2)%3]+(1-alpha)*AllCoeffs[k][9+(i+1)%3];
+            /*if (k==8){
+            cout<<"Ei: "<<AllCoeffs[k][i+12]<<endl;
+            cout<<"alpha: "<<alpha<<endl;
+            cout<<"1er: "<<alpha*AllCoeffs[k][9+(i+2)%3]<<", 2nd: "<<(1-alpha)*AllCoeffs[k][9+(i+1)%3]<<endl;
+            //cout<"dk: "<<AllCoeffs[k][9+(i+2)%3]<< ", dj : "<<AllCoeffs[k][9+(i+1)%3]<<endl;
+            }*/
             AllCoeffs[k][i+15]=alpha*AllCoeffs[k][6+(i+2)%3]+(1-alpha)*AllCoeffs[k][3+(i+1)%3];
         }
+        Omega[k].getBary(w1,w2,w3);
         AllCoeffs[k][18]=w1*AllCoeffs[k][9]+w2*AllCoeffs[k][10]+w3*AllCoeffs[k][11];
     }
 
@@ -406,7 +413,6 @@ Point*** ComputeAllSMT(int NbTri, int **NT, Point *ListPoints, Point *Omega, Poi
     return SMT;
 }
 
-
 bool dansMicroTriangle(Point& A, int t, Point **NMT){
     // Renvoie un booleen si le Point A est dans le triangle k
 
@@ -430,4 +436,40 @@ int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, Point*** SMT, in
         t+=1;
     }
     return t-1;
+}
+
+double** InterpolantDomaine(Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, int NbTri, double **AllCoeff, Point ***SMT){
+    // Calcul de l'interpolant sur tout le domaine D selon une grille predefinie
+
+    double** GrilleInter=CreateMat<double>(100,100);
+
+    // Calcul des a, b, c et d qui definissent la taille du domaine
+    double a, b, c, d;
+    double x0, y0, xi, yi;
+    ListPoint[0].getCart(x0,y0);
+    a=x0; b=x0;
+    c=y0; d=y0;
+    for(int i=1; i<NbPts; i++){
+        ListPoint[i].getCart(xi,yi);
+        a=min(a,xi);
+        b=max(b,xi);
+        c=min(c,yi);
+        d=max(d,yi);
+    }
+
+    double hx((b-a)/100); //pas entre chaque point de la grille par rapport a l'axe x
+    double hy((d-c)/100); //pas entre chaque point de la grille par rapport a l'axe y
+    Point grille;
+    double x(0), y(0);
+    for(int i=0; i<100; i++){    //boucle sur l'axe x
+        y=0;
+        for(int j=0; j<100; j++){   // boucle sur l'axe y
+            grille.attrib_coord(x,y);
+            GrilleInter[i][j]=evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri);
+            y+=hy;
+        }
+        x+=hx;
+    }
+
+    return GrilleInter;
 }
