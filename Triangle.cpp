@@ -192,11 +192,12 @@ void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri){
         alpha3 = DistEucl(A3,M2) / DistEucl(A3,A1);
 
          // Attribution des coordonnées barycentriques aux points Mi
-        NM[i][0].attrib_bary(0, 1-alpha1, alpha1);
-        NM[i][1].attrib_bary(alpha2, 0, 1-alpha2);
-        NM[i][2].attrib_bary(1-alpha3, alpha3, 0);
+        NM[i][0].attrib_bary(0.,(1.-alpha1), alpha1);
+        NM[i][1].attrib_bary(alpha2, 0.,(1.-alpha2));
+        NM[i][2].attrib_bary((1.-alpha3), alpha3, 0.);
      }
 }
+
 void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints, double **AllCoeff, Point*** SMT, int NbTri, int NbPts){
     // Creation du fichier PS.RES
     double X, Y, X1, X2, X3, Y1, Y2, Y3;
@@ -251,16 +252,16 @@ void CartToBary(Point& A, Point S1, Point S2, Point S3){
 
 void BaryToCart( Point &A, Point S1, Point S2, Point S3){
     // calcule les coordonnées cartesiennes d'un point A par rapport au triangle de sommet S1,S2,S3
-     double w1,w2,w3;
+    double w1,w2,w3;
     double x1,x2,x3,y1,y2,y3;
 
     S1.getCart(x1, y1);
     S2.getCart(x2, y2);
     S3.getCart(x3, y3);
     A.getBary(w1,w2,w3);
-     double X = w1*x1 + w2*x2 + w3*x3;
+    double X = w1*x1 + w2*x2 + w3*x3;
     double Y = w1*y1 + w2*y2 + w3*x3;
-     A.attrib_coord(X,Y);
+    A.attrib_coord(X,Y);
 }
 
 bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints){
