@@ -16,27 +16,28 @@ void Point::affiche()const{
 }
 
 void Point::attrib_coord(double xi, double yi){
-     /* Attribution des coordonnees du Point */
+     /* Attribution des coordonnees cartesiennes du Point */
 
 	X = xi;
 	Y = yi;
 }
 
 void Point::attrib_bary(double c1, double c2, double c3){
-     /* Attribution des coordonnees du Point */
+     /* Attribution des coordonnees barycentriques du Point */
     w1 = c1;
     w2 = c2;
     w3 = c3;
 }
 
 void Point::getCart(double &xi,double &yi){
-    /* Renvoie la valeur des coordonnees du point */
+    /* Renvoie la valeur des coordonnees cartesiennes du Point */
 
 	xi = X;
 	yi = Y;
 }
 
 void Point::getBary(double &c1, double &c2, double &c3){
+    /* Renvoie la valeur des coordonnees barycentriques du Point */
     c1 = w1;
     c2 = w2;
     c3 = w3;
@@ -45,8 +46,8 @@ void Point::getBary(double &c1, double &c2, double &c3){
 //////////////////////////////////////////////// FONCTIONS NON-MEMBRES ////////////////////////////////////////////
 
 Point* LecPoints(const char* name, int &N){
-    /* Lecture du fichier name pour extraire le nombre de points dans le domaine D (N)
-    et pour extraire les coordonnees de chaque point mis dans un vecteur de N Points */
+    /* Lecture du fichier "name" et extraction du nombre de points et de leurs coordonnées 
+    Renvoie le vecteur de Point (Point NbPts)*/
 
 	double tmp, A, B;
 
@@ -64,42 +65,6 @@ Point* LecPoints(const char* name, int &N){
 	return listPoints;
 }
 
-void afficheCoordPoints(Point* ListPoints, int N){
-    // Affichage des traingles et de leurs coordonnees cartesiennes
-
-    for(int k=0; k<N; k++){
-        //cout<<"Triangle "<<k<<": ";
-        ListPoints[k].affiche();
-    }
-}
-
-void CreateFilePoint(const char* name, int nrow, Point *A){
-    // Creation d'un fichier qui comprend les coordonnnees des points du vecteur A
-
-    double X,Y;
-    ofstream fichier(name);
-    for (int i=0; i<nrow; i++){
-        A[i].getCart(X,Y);
-        fichier<<X<<" "<<Y<<endl;
-    }
-    fichier.close();
-}
-
-void CreateFileMatPoint(const char* name, int nrow, int ncol, Point **A){
-    // Creation d'un fichier qui comprend les coordonnnees des points du vecteur A
-
-    double X,Y;
-    ofstream fichier(name);
-    for (int i=0; i<nrow; i++){
-        for (int j=0; j<ncol; j++){
-            A[i][j].getCart(X,Y);
-            fichier<<X<<" "<<Y<<" ";
-        }
-        fichier<<endl;
-    }
-    fichier.close();
-}
-
 double multPointsCart(Point A, Point B){
     // Multiplication des coordonnees cartesiennes des point A et B
 
@@ -113,7 +78,7 @@ double multPointsCart(Point A, Point B){
 }
 
 Point calcVect(Point A, Point B){
-    // Calcul du point vect(AB)
+    // Calcule des composantes du vecteur AB
 
     double xA,yA,xB,yB;
     A.getCart(xA,yA);

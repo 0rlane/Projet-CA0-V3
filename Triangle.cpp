@@ -68,6 +68,7 @@ void CalculCoeff(double &a1, double &b1, double &c1, Point A, Point B){
 
 Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1, double c2){
     // Calcule les coordonnées X et Y d'intersection des deux droites de coeff a,b,c
+    // Renvoie le point d'intersection
 
     Point inter;
     double X, Y;
@@ -227,16 +228,17 @@ void CartToBary(Point& A, Point S1, Point S2, Point S3){
 
 void BaryToCart( Point &A, Point S1, Point S2, Point S3){
     // calcule les coordonnées cartesiennes d'un point A par rapport au triangle de sommet S1,S2,S3
-     double w1,w2,w3;
+
+    double w1,w2,w3;
     double x1,x2,x3,y1,y2,y3;
 
     S1.getCart(x1, y1);
     S2.getCart(x2, y2);
     S3.getCart(x3, y3);
     A.getBary(w1,w2,w3);
-     double X = w1*x1 + w2*x2 + w3*x3;
+    double X = w1*x1 + w2*x2 + w3*x3;
     double Y = w1*y1 + w2*y2 + w3*x3;
-     A.attrib_coord(X,Y);
+    A.attrib_coord(X,Y);
 }
 
 bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints){
@@ -253,9 +255,10 @@ bool dansTriangle(Point& A, int k, int **NT, Point *ListPoints){
 }
 
 int LocatePointTriangle(Point A, Point *ListPoints, int **NT, int nbtri){
-    //La fonction renvoie le numero du triangle où est localise le Point A dans le domaine D=[a,b]*[c,d]
+    /* Determine le numero du triangle dans lequel est localisé le Point A
+    Renvoie le numero du triangle (int) */
 
-    int k(0);   //numero du triangle contenant le Point A. On demmarre du triangle 0 pour faire la recherche
+    int k(0);
     bool test(false);
     while(test==false && k<nbtri){
         test=dansTriangle(A,k,NT,ListPoints);
@@ -265,21 +268,23 @@ int LocatePointTriangle(Point A, Point *ListPoints, int **NT, int nbtri){
 }
 
 double** ComputeAllCoeff(int NbTri, int NumFonc, int **NT, Point *ListPoints, Point **NM, Point *Omega){
-    // NumFonc : numéro de la fonction a interpoler :
-    //      - 1 = exponentielle
-    //      - 2 = polynomiale
+    /* Calcule les 19 coefficients associés a chaque triangle
+    Renvoie la matrice de coefficients (double NbTri*19)*/
 
     double** AllCoeffs = new double*[NbTri];
 
     for (int k = 0; k < NbTri; ++k)
     {
-        AllCoeffs[k] = new double[19];  // Vecteur contenant tous les coefficients pour un triangle A1A2A3: ai,bi,ci,di,ei,mi,w
+        AllCoeffs[k] = new double[19];  // coefficients pour un triangle A1A2A3: ai,bi,ci,di,ei,mi,w
 
         double p, q, r, a, b, alpha, w1, w2, w3;
         for (int i=0; i<3; i++){
-            p=multPointsCart(gradf(ListPoints[NT[k][i]-1],NumFonc),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+1)%3]));  //Initialisation du point pi
-            q=multPointsCart(gradf(ListPoints[NT[k][i]-1],NumFonc),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+2)%3]));  //Initialisation du point qi
-            r=multPointsCart(gradf(ListPoints[NT[k][i]-1],NumFonc),calcVect(ListPoints[NT[k][i]-1],Omega[k]));  //Initialisation du point ri
+            p=multPointsCart(gradf(ListPoints[NT[k][i]-1],NumFonc),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+1)%3]));  
+            //Initialisation du point pi
+            q=multPointsCart(gradf(ListPoints[NT[k][i]-1],NumFonc),calcVect(ListPoints[NT[k][i]-1],NM[k][(i+2)%3]));  
+            //Initialisation du point qi
+            r=multPointsCart(gradf(ListPoints[NT[k][i]-1],NumFonc),calcVect(ListPoints[NT[k][i]-1],Omega[k]));  
+            //Initialisation du point ri
 
             AllCoeffs[k][i]=f(ListPoints[NT[k][i]-1],NumFonc);   // Initialisation des coefficients ai
             AllCoeffs[k][i+3]=AllCoeffs[k][i]+q/2;   //Initialisation des coefficients bi
@@ -299,14 +304,7 @@ double** ComputeAllCoeff(int NbTri, int NumFonc, int **NT, Point *ListPoints, Po
                 NM[k][2].getBary(a,alpha,b);
                 break;
             }
-
             AllCoeffs[k][i+12]=alpha*AllCoeffs[k][9+(i+2)%3]+(1-alpha)*AllCoeffs[k][9+(i+1)%3];
-            /*if (k==8){
-            cout<<"Ei: "<<AllCoeffs[k][i+12]<<endl;
-            cout<<"alpha: "<<alpha<<endl;
-            cout<<"1er: "<<alpha*AllCoeffs[k][9+(i+2)%3]<<", 2nd: "<<(1-alpha)*AllCoeffs[k][9+(i+1)%3]<<endl;
-            //cout<"dk: "<<AllCoeffs[k][9+(i+2)%3]<< ", dj : "<<AllCoeffs[k][9+(i+1)%3]<<endl;
-            }*/
             AllCoeffs[k][i+15]=alpha*AllCoeffs[k][6+(i+2)%3]+(1-alpha)*AllCoeffs[k][3+(i+1)%3];
         }
         Omega[k].getBary(w1,w2,w3);
@@ -317,9 +315,11 @@ double** ComputeAllCoeff(int NbTri, int NumFonc, int **NT, Point *ListPoints, Po
 }
 
 double foncInterpolant(Point M, Point** MicroTriangles, int l, double *Coeffs){
-    // Fonction qui calcule la valeur de L'interpolant à partir du numéro de micro triangle
-    // l : numéro du micro-triangle
-    // Coeffs : liste des 19 coefficients du triangle T
+    /* Fonction qui calcule la valeur de l'interpolant au Point M à partir du numéro de micro triangle 
+    et des coefficients du triangle concerné
+    Renvoie la valeur de l'interpolant (double)*/
+
+    // l : numéro de micro-triangle
 
     int i,j,k;
     bool cas(l%2==0); // True si l = 2i
@@ -360,10 +360,12 @@ double foncInterpolant(Point M, Point** MicroTriangles, int l, double *Coeffs){
 }
 
 double evalInterpolant(Point I, Point *ListPoints, int **NT, Point *Omega, Point **NM, double **AllCoeff, Point*** SMT, int NbTri){
-    // fonction qui évalue la valeur de l'interpolant au point quelconque I
-    // SMT : pointeur des sommets des microtriangle de chaque triangle
+    /* Calcule la valeur de l'interpolant au Point I quelconque 
+    Renvoie la valeur de l'interpolant (double)*/
 
+    // determine le numero de triangle
     int numTriangle = LocatePointTriangle(I, ListPoints, NT, NbTri);
+    // determine le numéro de micro triangle
     int numMicroTriangle = LocatePointMicroTriangle(I, ListPoints, numTriangle, SMT, NT, Omega, NM);
 
     double val = foncInterpolant(I, SMT[numTriangle], numMicroTriangle, AllCoeff[numTriangle]);
@@ -372,7 +374,8 @@ double evalInterpolant(Point I, Point *ListPoints, int **NT, Point *Omega, Point
 }
 
 Point*** ComputeAllSMT(int NbTri, int **NT, Point *ListPoints, Point *Omega, Point **NM){
-    // evalue et retourne un pointeur sur les sommets de chaque microtriangle de chaque triangle
+    /* Determine les sommets de chaque microtriangle de chaque triangle
+    Renvoie le vecteur 3 dimensions contenant les sommets (Point Nbtri*6*3)*/
 
     Point*** SMT = new Point**[NbTri];
 
@@ -392,7 +395,7 @@ Point*** ComputeAllSMT(int NbTri, int **NT, Point *ListPoints, Point *Omega, Poi
 }
 
 bool dansMicroTriangle(Point& A, int t, Point **NMT){
-    // Renvoie un booleen si le Point A est dans le triangle k
+    // Renvoie un booleen si le Point A est dans le microtriangle t
 
     CartToBary(A,NMT[t][0],NMT[t][1],NMT[t][2]);
     double w1,w2,w3;
@@ -405,7 +408,8 @@ bool dansMicroTriangle(Point& A, int t, Point **NMT){
 }
 
 int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, Point*** SMT, int **NT, Point *Omega, Point **NM){
-    //La fonction renvoie le numero du micro triangle où est localise le Point A dans le triangle k
+    /* Determine le numero du microtriangle dans lequel est localisé le Point A
+    Renvoie le numero du microtriangle (int), valeur comprise entre 0 et 5 */
 
     bool test(false);
     int t(0);
@@ -416,8 +420,11 @@ int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, Point*** SMT, in
     return t-1;
 }
 
-void FichierSurface(const char* n_grille , const char* n_fonc, int NumFonc, Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, 
-                    int NbTri, double **AllCoeff, Point ***SMT){
+void FichierSurface(const char* n_grille , const char* n_fonc, int NumFonc, Point *ListPoint, int NbPts, int **NT, 
+                    Point *Omega, Point **NM, int NbTri, double **AllCoeff, Point ***SMT){
+    /* Calcule une grille de 100x100 points dans le domaine considéré et calcule l'interpolant et la fonction sur 
+    toute la grille 
+    Genere 2 fichiers n_grille et n_fonc contenant les valeurs a chaque point de la grille (double 100x100) */
 
     ofstream interp(n_grille);
     ofstream fonc(n_fonc);
@@ -461,6 +468,7 @@ void FichierSurface(const char* n_grille , const char* n_fonc, int NumFonc, Poin
 ///////////////// OUTPUT
 
 void results_ListTriangles(ostream &fichier, int NbTri, int **NT, Point *Omega){
+    // Ecrit la liste des triangles dans le flux suivant la syntaxe demandée
     double X,Y;
     fichier << "--------------------------------------------------------------------" << endl;
     fichier << "    Liste des triangles et des points Omega associés" << endl; 
@@ -474,6 +482,7 @@ void results_ListTriangles(ostream &fichier, int NbTri, int **NT, Point *Omega){
     }
 }
 void results_ListPoints(ostream &fichier, int NbTri, Point **NM){
+    // Ecrit la liste des points dans le flux suivant la syntaxe demandée
     double X, Y, X1, X2, X3, Y1, Y2, Y3;
     fichier << "--------------------------------------------------------------------" << endl;
     fichier << "    Liste des points Mi pour chaque triangle" << endl; 
@@ -489,6 +498,7 @@ void results_ListPoints(ostream &fichier, int NbTri, Point **NM){
     }
 }
 void results_ValFonc(ostream &fichier, int NumFonc, int NbPts, Point *ListPoints){
+    // Ecrit la valeur de la fonction dans le flux suivant la syntaxe demandée
     double X,Y;
     fichier << endl << "----------------------- FONCTION N°" << NumFonc << " -------------------------------" << endl << endl;
     fichier << "--------------------------------------------------------------------" << endl;
@@ -504,6 +514,7 @@ void results_ValFonc(ostream &fichier, int NumFonc, int NbPts, Point *ListPoints
 }
 void results_Interpol(ostream &fichier, int NbTri, int NumFonc, Point *ListPoints, int **NT, Point *Omega, Point **NM, 
                       double **AllCoeff, Point*** SMT){
+    // Ecrit la valeur de l'interpolant aux points demandée
     Point UN(2.5,0.8), DEUX(0.2,1.1), TROIS(2.9,2.5);
     fichier << "--------------------------------------------------------------------" << endl;
     fichier << "    Valeur de l'interpolant aux points :" << endl; 
@@ -514,7 +525,7 @@ void results_Interpol(ostream &fichier, int NbTri, int NumFonc, Point *ListPoint
 }
 void results_Erreur(ostream &fichier, int NumFonc, Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, 
                     int NbTri, double **AllCoeff, Point ***SMT){
-
+    // Calcule et ecrit dans le flux la valeur minimale et maximale de l'erreur d'interpolation
     fichier << "--------------------------------------------------------------------" << endl;
     fichier << "    Valeur minimum et maximum de f-S sur les points de visualisation" << endl; 
     fichier << "--------------------------------------------------------------------" << endl;

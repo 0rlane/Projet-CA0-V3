@@ -66,7 +66,7 @@ int main(){
 
     ///////////////////////// GENERATION DES SURFACES /////////////////////////////////////
 
-    bool OutputGrille(false);
+    bool OutputGrille(true);
     // true pour générer les grilles de l'interpolant et des fonctions pour représentation Matlab
 
     if (OutputGrille)
