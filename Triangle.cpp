@@ -2,14 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include <iomanip> // pour setw
 
 using namespace std;
 
 int** lectTriangles(const char* name, int &NbTri){
-    /* Recuperation du nombre de triangle (NbTri) dans le fichier name
-    et creation de la matrice NT contenant les sommet de chaque traingle (NbTri*3) obtenu dans le fichier name */
+    /* Recuperation du nombre de triangle (NbTri) dans le fichier name et creation de la 
+    matrice NT contenant les sommet de chaque triangle (NbTri*3) obtenu dans le fichier name */
 
-    ifstream fichier("listri.dat");
+    ifstream fichier(name);
     fichier>>NbTri;
 
     int** NT=CreateMat<int>(NbTri,3);
@@ -40,7 +41,9 @@ int trianglevoisin(int NbTri, int S1, int S2, int k, int **NT){
 }
 
 int** initNTV(int NbTri, int **NT){
-    // Initialisation de la matrice NTV (NbTri*3)
+    /* Pour chaque triangle, recherche les n° de triangles voisins 
+           la valeur -1 est affectée s'il n'y a pas de voisin 
+    Renvoie la matrive NTV (int NbTri*3) en sortie */
 
     int** NTV=CreateMat<int>(NbTri,3);
 
@@ -53,7 +56,7 @@ int** initNTV(int NbTri, int **NT){
 }
 
 void CalculCoeff(double &a1, double &b1, double &c1, Point A, Point B){
-    // Calcul des coefficents a, b, c de la droite (D): ax+by+c=0 passant par les point A et B
+    // Calcule les coefficents a, b, c de la droite (D): ax+by+c=0 passant par les point A et B
 
     double Xa, Ya, Xb, Yb;
     A.getCart(Xa,Ya);
@@ -64,7 +67,7 @@ void CalculCoeff(double &a1, double &b1, double &c1, Point A, Point B){
 }
 
 Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1, double c2){
-    // Calcul les corrdonnées X et Y d'intersection des deux droites de coeff a,b,c
+    // Calcule les coordonnées X et Y d'intersection des deux droites de coeff a,b,c
 
     Point inter;
     double X, Y;
@@ -92,7 +95,7 @@ Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1,
 }
 
 double DistEucl(Point A, Point B){
-	// Calcule la distance euclidienne entre deux Points
+	// Calcule la distance euclidienne entre les Points A et B
 
 	double Xa, Ya, Xb, Yb;
 	A.getCart(Xa,Ya);
@@ -102,7 +105,8 @@ double DistEucl(Point A, Point B){
 }
 
 Point* initOmega(Point* ListPoints, int NbTri, int **NT){
-    // Initialisation de la matrice Omega de Nbtri Points
+    /* Recherche les Points omega : centre de cercle inscrit de chaque triangle
+    Renvoie le vecteur Omega (Point NbTri)*/
 
     Point *Omega=new Point[NbTri];
     double w1,w2,w3,sumw;
@@ -137,12 +141,9 @@ Point* initOmega(Point* ListPoints, int NbTri, int **NT){
 }
 
 Point** initNM(int **NT, int **NTV, Point* ListPoints, int nbtri, Point *omega){
-    /*Initilisationde la matrice NM Point (nbtriangles*3) qui contient les coordonnees x et y des trois points Mi du triangle k
-    NT=matrice (nb_triangles*3) qui contient les 3 sommets pour chaque traingle
-    NTV= matrice (nb_triangles*3) qui contient le numero des 3 triangles voisins pour chaque triangle (-1 si il n'y a pas de traingle voisin)
-    points=matrice (nb_points*3) qui contient les numero du point et ses coordonnees x et y associees
-    nbtri= nombre de triangles dans le domaine
-    omega= matrice Point (nb_trinagles) qui contient les coefficients x et y du centre du cercle inscrit de chaque triangle */
+    /* Recherche les Points Mi : intersection entre le coté d'un triangle et le segment entre 
+    les centres de cercles inscrit de triangles voisins.
+    Renvoie la matrice NM (Point NbTri*3)*/
 
     Point** NM=CreateMat<Point>(nbtri,3);
 
@@ -151,14 +152,15 @@ Point** initNM(int **NT, int **NTV, Point* ListPoints, int nbtri, Point *omega){
         double a2, b2, c2;
 
         for (int i=0; i<3; i++){
-            if (NTV[k][i]!=-1){
-                // Si il y a un triangle voisin
-                CalculCoeff(a1,b1,c1,ListPoints[NT[k][(i+1)%3]-1],ListPoints[NT[k][(i+2)%3]-1]); // Coefficients de la droite (D1): a1*x+b1*y+c1=0 qui passe par les sommets A2 et A3
-                CalculCoeff(a2,b2,c2,omega[k],omega[NTV[k][i]]);// Coefficients de la droite (D2): a2*x+b2*y+c2=0 qui passe par les sommets le centre du cercle inscrit du triangle k et par le centre du cercle inscrit du triangle voisin de k par les sommets A2 et A3
+            if (NTV[k][i]!=-1){ // Si il y a un triangle voisin
+                CalculCoeff(a1,b1,c1,ListPoints[NT[k][(i+1)%3]-1],ListPoints[NT[k][(i+2)%3]-1]); 
+                // Coefficients de la droite (D1): a1*x+b1*y+c1=0 qui passe par les sommets A2 et A3
+                CalculCoeff(a2,b2,c2,omega[k],omega[NTV[k][i]]);
+                // Coefficients de la droite (D2): a2*x+b2*y+c2=0 qui passe par les sommets le centre du cercle 
+                // inscrit du triangle k et par le centre du cercle inscrit du triangle voisin de k par les sommets A2 et A3
                 NM[k][i]=IntersectionDroites(a1,a2,b1,b2,c1,c2);
 
-            }else {
-                // Si il n'y a pas de triangle voisin
+            }else { // S'il n'y a pas de triangle voisin
                 double X, Y, X1, Y1, X2, Y2;
                 ListPoints[NT[k][(i+1)%3]-1].getCart(X1,Y1);
                 ListPoints[NT[k][(i+2)%3]-1].getCart(X2,Y2);
@@ -168,15 +170,20 @@ Point** initNM(int **NT, int **NTV, Point* ListPoints, int nbtri, Point *omega){
             }
         }
     }
+
+    // calcule les coordonnées barycentriques des points Mi
+    CoordBaryMi(NT, ListPoints, NM, nbtri);
+
     return NM;
 }
 
 void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri){
-    // Mise en memoire des coordonnees barycentriques des points M1, M2 et M3
+    /* Calcule les coordonnées barycentriques des points Mi de chaque triangle */
 
     Point A1,A2,A3,M1,M2,M3;
     double alpha1, alpha2, alpha3;
     for (int i = 0; i < NbTri; ++i){
+        
         // Recuperation des coordonnees des sommets A1, A2 et A3 du triangle i
         A1 = ListPoints[NT[i][0]-1];
         A2 = ListPoints[NT[i][1]-1];
@@ -196,38 +203,6 @@ void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri){
         NM[i][1].attrib_bary(alpha2, 0, 1-alpha2);
         NM[i][2].attrib_bary(1-alpha3, alpha3, 0);
      }
-}
-
-void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints, double **AllCoeff, Point*** SMT, int NbTri, int NbPts, int NumFonc){
-    // Creation du fichier PS.RES
-    double X, Y, X1, X2, X3, Y1, Y2, Y3;
-    ofstream fichier(name);
-    for (int k=0; k<NbTri; k++){
-
-        Omega[k].getCart(X,Y);
-        fichier<<k<<" "<<NT[k][0]<<" "<<NT[k][1]<<" "<<NT[k][2]<<" "<<X<<" "<<Y<<endl;
-    }
-    for (int k=0; k<NbTri; k++){
-        NM[k][0].getCart(X1,Y1);
-        NM[k][1].getCart(X2,Y2);
-        NM[k][2].getCart(X3,Y3);
-        fichier<<k<<" "<<X1<<" "<<Y1<<" "<<X2<<" "<<Y2<<" "<<X3<<" "<<Y3<<endl;
-    }
-    for (int i=0; i<NbPts; i++){
-        ListPoints[i].getCart(X,Y);
-        fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i],NumFonc)<<" "<<fpx(ListPoints[i], NumFonc)<<" "<<fpy(ListPoints[i],NumFonc)<<endl;
-    }
-
-    // valeur de l'interpolant aux points (2.5,0.8) (0.2,1.1) (2.9,2.5)
-    Point UN(2.5,0.8);
-    Point DEUX(0.2,1.1);
-    Point TROIS(2.9,2.5);
-    fichier << evalInterpolant(UN, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << " "
-            << evalInterpolant(DEUX, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << " "
-            << evalInterpolant(TROIS, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
-
-    // valeur minimum et maximum de f-S sur l'ensemble des points
-    fichier.close();
 }
 
 void CartToBary(Point& A, Point S1, Point S2, Point S3){
@@ -441,10 +416,11 @@ int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, Point*** SMT, in
     return t-1;
 }
 
-double** InterpolantDomaine(Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, int NbTri, double **AllCoeff, Point ***SMT){
-    // Calcul de l'interpolant sur tout le domaine D selon une grille predefinie
+void FichierSurface(const char* n_grille , const char* n_fonc, int NumFonc, Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, 
+                    int NbTri, double **AllCoeff, Point ***SMT){
 
-    double** GrilleInter=CreateMat<double>(100,100);
+    ofstream interp(n_grille);
+    ofstream fonc(n_fonc);
 
     // Calcul des a, b, c et d qui definissent la taille du domaine
     double a, b, c, d;
@@ -469,9 +445,117 @@ double** InterpolantDomaine(Point *ListPoint, int NbPts, int **NT, Point *Omega,
         for(int j=0; j<100; j++){   // boucle sur l'axe y
             y = (double)(j*hy);
             grille.attrib_coord(x,y);
-            GrilleInter[i][j]=evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri);
+
+            fonc << f(grille, NumFonc) << " ";
+            interp << evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri) << " ";
+        }
+        fonc << endl;
+        interp << endl;
+    }
+
+
+    interp.close();
+    fonc.close();
+}
+
+///////////////// OUTPUT
+
+void results_ListTriangles(ostream &fichier, int NbTri, int **NT, Point *Omega){
+    double X,Y;
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Liste des triangles et des points Omega associés" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << setw(5) << "k" << setw(10) << "NT(1,k)" << setw(10) << "NT(2,k)" << setw(10) << "NT(3,k)" << setw(10) << "X_omega" 
+            << setw(10) << "Y_omega" << endl;
+    for (int k=0; k<NbTri; k++){
+        Omega[k].getCart(X,Y);
+        fichier << setw(5) << k << setw(10) << NT[k][0] << setw(10) << NT[k][1] << setw(10) << NT[k][2] << setw(10) << X 
+                << setw(10) << Y << endl;
+    }
+}
+void results_ListPoints(ostream &fichier, int NbTri, Point **NM){
+    double X, Y, X1, X2, X3, Y1, Y2, Y3;
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Liste des points Mi pour chaque triangle" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << setw(5) << "k" << setw(10) << "x(M1)" << setw(10) << "y(M1)" << setw(10) << "x(M2)" << setw(10) << "y(M2)" 
+            << setw(10) << "x(M3)" << setw(10) << "y(M3)" << endl;
+    for (int k=0; k<NbTri; k++){
+        NM[k][0].getCart(X1,Y1);
+        NM[k][1].getCart(X2,Y2);
+        NM[k][2].getCart(X3,Y3);
+        fichier << setw(5) << k << setw(10) << X1 << setw(10) << Y1 << setw(10) << X2 << setw(10) << Y2 << setw(10) << X3 
+                << setw(10) << Y3 << endl;
+    }
+}
+void results_ValFonc(ostream &fichier, int NumFonc, int NbPts, Point *ListPoints){
+    double X,Y;
+    fichier << endl << "----------------------- FONCTION N°" << NumFonc << " -------------------------------" << endl << endl;
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Liste des N points et valeurs de la fonction" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << setw(5) << "i" << setw(10) << "xi" << setw(10) << "yi" << setw(10) << "f(xi,yi)" << setw(10) << "df/dx" 
+            << setw(10) << "df/dy" << endl;
+    for (int i=0; i<NbPts; i++){
+        ListPoints[i].getCart(X,Y);
+        fichier << setw(5) << i << setw(10) << X << setw(10) << Y << setw(10) << f(ListPoints[i],NumFonc) << setw(10) 
+                << fpx(ListPoints[i], NumFonc) << setw(10) << fpy(ListPoints[i],NumFonc) << endl;
+    }
+}
+void results_Interpol(ostream &fichier, int NbTri, int NumFonc, Point *ListPoints, int **NT, Point *Omega, Point **NM, 
+                      double **AllCoeff, Point*** SMT){
+    Point UN(2.5,0.8), DEUX(0.2,1.1), TROIS(2.9,2.5);
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Valeur de l'interpolant aux points :" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "(2.5,0.8) : " << evalInterpolant(UN, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
+    fichier << "(0.2,1.1) : " << evalInterpolant(DEUX, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
+    fichier << "(2.9,2.5) : " << evalInterpolant(TROIS, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
+}
+void results_Erreur(ostream &fichier, int NumFonc, Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, 
+                    int NbTri, double **AllCoeff, Point ***SMT){
+
+    fichier << "--------------------------------------------------------------------" << endl;
+    fichier << "    Valeur minimum et maximum de f-S sur les points de visualisation" << endl; 
+    fichier << "--------------------------------------------------------------------" << endl;
+
+    // Calcul des a, b, c et d qui definissent la taille du domaine
+    double a, b, c, d;
+    double x0, y0, xi, yi;
+    ListPoint[0].getCart(x0,y0);
+    a=x0; b=x0;
+    c=y0; d=y0;
+    for(int i=1; i<NbPts; i++){
+        ListPoint[i].getCart(xi,yi);
+        a=min(a,xi);
+        b=max(b,xi);
+        c=min(c,yi);
+        d=max(d,yi);
+    }
+
+    double hx((b-a)/100); //pas entre chaque point de la grille par rapport a l'axe x
+    double hy((d-c)/100); //pas entre chaque point de la grille par rapport a l'axe y
+
+    Point grille;
+    double x, y, F, S;
+    double erreur_max(-100), erreur_min(100);
+
+    for(int i=0; i<100; i++){    //boucle sur l'axe x
+        x = (double) (i*hx);
+        for(int j=0; j<100; j++){   // boucle sur l'axe y
+            y = (double)(j*hy);
+            grille.attrib_coord(x,y);
+
+            F = f(grille, NumFonc);
+            S = evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri);
+
+            erreur_min = min(erreur_min,(F-S));
+            erreur_max = max(erreur_max,(F-S));
         }
     }
 
-    return GrilleInter;
+    fichier << "erreur min = " << erreur_min << endl;
+    fichier << "erreur max = " << erreur_max << endl;
 }
+
+
