@@ -1,7 +1,13 @@
+clear all;
+close all;
+
 load ps.pts
 load Omega.pts
 load NM.pts
 load grille1.pts
+load grille2.pts
+load f1.pts
+load f2.pts
 
 N=ps(1,1);
 ps2=sortrows(ps([2:end],:));
@@ -35,4 +41,15 @@ fprintf(fid,'%d %d %d\n',tri');
 fclose(fid);
 
 figure(2);
-surf(linspace(0,3,100), linspace(0,3,100),grille1);
+surf(linspace(0,3,100), linspace(0,3,100),(f1-grille1));
+figure(3);
+surf(linspace(0,3,100), linspace(0,3,100),(f2-grille2));
+
+%figure(4);
+%plot3(linspace(0,3,100),linspace(0,3,100),grille1,"bo");
+%hold on
+%plot3(linspace(0,3,100),linspace(0,3,100),f1,"ro");
+%figure(5);
+%plot3(linspace(0,3,100),linspace(0,3,100),grille2,"bo")
+%hold on
+%plot3(linspace(0,3,100),linspace(0,3,100),f2,"ro");

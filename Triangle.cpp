@@ -410,10 +410,11 @@ int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, Point*** SMT, in
     return t-1;
 }
 
-double** InterpolantDomaine(Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, int NbTri, double **AllCoeff, Point ***SMT){
-    // Calcul de l'interpolant sur tout le domaine D selon une grille predefinie
+void FichierSurface(const char* n_grille , const char* n_fonc, int NumFonc, Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, 
+                    int NbTri, double **AllCoeff, Point ***SMT){
 
-    double** GrilleInter=CreateMat<double>(100,100);
+    ofstream interp(n_grille);
+    ofstream fonc(n_fonc);
 
     // Calcul des a, b, c et d qui definissent la taille du domaine
     double a, b, c, d;
@@ -438,13 +439,18 @@ double** InterpolantDomaine(Point *ListPoint, int NbPts, int **NT, Point *Omega,
         for(int j=0; j<100; j++){   // boucle sur l'axe y
             y = (double)(j*hy);
             grille.attrib_coord(x,y);
-            GrilleInter[i][j]=evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri);
+
+            fonc << f(grille, NumFonc) << " ";
+            interp << evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri) << " ";
         }
+        fonc << endl;
+        interp << endl;
     }
 
-    return GrilleInter;
-}
 
+    interp.close();
+    fonc.close();
+}
 
 ///////////////// OUTPUT
 
@@ -537,8 +543,13 @@ void results_Erreur(ostream &fichier, int NumFonc, Point *ListPoint, int NbPts, 
             F = f(grille, NumFonc);
             S = evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri);
 
+            if ((F-S)<(-1.) && NumFonc==1)
+            {
+                cout << "coord minima : " << x << " " << y << endl;
+            }
+
             erreur_min = min(erreur_min,(F-S));
-            erreur_max = max(erreur_min,(F-S));
+            erreur_max = max(erreur_max,(F-S));
         }
     }
 
@@ -546,34 +557,4 @@ void results_Erreur(ostream &fichier, int NumFonc, Point *ListPoint, int NbPts, 
     fichier << "erreur max = " << erreur_max << endl;
 }
 
-void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints, double **AllCoeff, Point*** SMT, int NbTri, int NbPts, int NumFonc){
-    // Creation du fichier PS.RES
-    double X, Y, X1, X2, X3, Y1, Y2, Y3;
-    ofstream fichier(name);
-    for (int k=0; k<NbTri; k++){
 
-        Omega[k].getCart(X,Y);
-        fichier<<k<<" "<<NT[k][0]<<" "<<NT[k][1]<<" "<<NT[k][2]<<" "<<X<<" "<<Y<<endl;
-    }
-    for (int k=0; k<NbTri; k++){
-        NM[k][0].getCart(X1,Y1);
-        NM[k][1].getCart(X2,Y2);
-        NM[k][2].getCart(X3,Y3);
-        fichier<<k<<" "<<X1<<" "<<Y1<<" "<<X2<<" "<<Y2<<" "<<X3<<" "<<Y3<<endl;
-    }
-    for (int i=0; i<NbPts; i++){
-        ListPoints[i].getCart(X,Y);
-        fichier<<i<<" "<<X<<" "<<Y<<" "<<f(ListPoints[i],NumFonc)<<" "<<fpx(ListPoints[i], NumFonc)<<" "<<fpy(ListPoints[i],NumFonc)<<endl;
-    }
-
-    // valeur de l'interpolant aux points (2.5,0.8) (0.2,1.1) (2.9,2.5)
-    Point UN(2.5,0.8);
-    Point DEUX(0.2,1.1);
-    Point TROIS(2.9,2.5);
-    fichier << evalInterpolant(UN, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << " "
-            << evalInterpolant(DEUX, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << " "
-            << evalInterpolant(TROIS, ListPoints, NT, Omega, NM, AllCoeff, SMT, NbTri) << endl;
-
-    // valeur minimum et maximum de f-S sur l'ensemble des points
-    fichier.close();
-}

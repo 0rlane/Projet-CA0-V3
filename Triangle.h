@@ -46,10 +46,8 @@ bool dansMicroTriangle(Point& A, int t, Point **NMT);
 
 int LocatePointMicroTriangle(Point A, Point *ListPoints, int k, Point*** SMT, int **NT, Point *Omega, Point **NM);
 
-double** InterpolantDomaine(Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, int NbTri, double **AllCoeff, Point ***SMT);
-
-void CreatFileResults(const char* name,int **NT, Point *Omega, Point **NM, Point *ListPoints, double **Allcoeff, Point*** SMT,
-					  int NbTri, int NbPts, int NumFonc);
+void FichierSurface(const char* n_grille , const char* n_fonc, int NumFonc, Point *ListPoint, int NbPts, int **NT, Point *Omega, 
+					Point **NM, int NbTri, double **AllCoeff, Point ***SMT);
 
 void results_ListTriangles(std::ostream &fichier, int NbTri, int **NT, Point *Omega);
 void results_ListPoints(std::ostream &fichier, int NbTri, Point **NM);

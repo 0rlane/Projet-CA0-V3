@@ -109,7 +109,7 @@
     Valeur minimum et maximum de f-S sur les points de visualisation
 --------------------------------------------------------------------
 erreur min = -12.691
-erreur max = 0.126057
+erreur max = 5.71417
 
 ----------------------- FONCTION N°2 -------------------------------
 
@@ -149,4 +149,4 @@ erreur max = 0.126057
     Valeur minimum et maximum de f-S sur les points de visualisation
 --------------------------------------------------------------------
 erreur min = -0.522346
-erreur max = -0.00176234
+erreur max = 0.640695

@@ -65,20 +65,27 @@ int main(){
 
     ///////////////////////////////////////////////////////////////////////////////////////
 
-    
-    double **Grille;
-    double** AllCoeff = ComputeAllCoeff(NbTri, 1, NT, ListPoints, NM, Omega);
-    Grille=InterpolantDomaine(ListPoints,NbPts, NT,Omega,NM,NbTri,AllCoeff,SMT);
-    ofstream grille("grille1.pts");
-    for(int i=0; i<100; i++){
-        for(int j=0; j<100; j++){
-            grille<<Grille[i][j]<<" ";
-        }
-        grille<<endl;
+    ///////////////////////// GENERATION DES SURFACES /////////////////////////////////////
+
+    bool OutputGrille(false);
+
+    if (OutputGrille)
+    {
+        ofstream grille1("grille1.pts");
+        ofstream fonc1("f1.pts");
+
+        double** AllCoeff;
+
+        AllCoeff = ComputeAllCoeff(NbTri, 1, NT, ListPoints, NM, Omega);
+        FichierSurface("grille1.pts","f1.pts",1,ListPoints,NbPts, NT,Omega,NM,NbTri,AllCoeff,SMT);
+
+        AllCoeff = ComputeAllCoeff(NbTri, 2, NT, ListPoints, NM, Omega);
+        FichierSurface("grille2.pts","f2.pts",2,ListPoints,NbPts, NT,Omega,NM,NbTri,AllCoeff,SMT);
+
+        FreeMat(AllCoeff,NbTri);
     }
-    grille.close();
-    FreeMat(AllCoeff,NbTri);
-    
+
+    ///////////////////////////////////////////////////////////////////////////////////////        
 
     FreeMat(NT,NbTri); FreeMat(NTV,NbTri);
 

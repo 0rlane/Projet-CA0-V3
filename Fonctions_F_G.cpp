@@ -12,7 +12,7 @@ double f(Point A, int numero_fonction){
     switch (numero_fonction){
     case 1: // Fonction f(x,y)=exp(x+y)
         return exp(x+y);
-    case 2: // Fonction g(x,y)
+    case 2: // Fonction g(x,y)=
         return y*y*y-2*x*y*y-5*x*x*y+10*x*y+1;
     }
 }
