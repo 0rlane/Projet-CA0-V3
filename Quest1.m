@@ -41,9 +41,9 @@ fprintf(fid,'%d %d %d\n',tri');
 fclose(fid);
 
 figure(2);
-surf(linspace(0,3,100), linspace(0,3,100),(f1-grille1));
+surf(linspace(0,3,100), linspace(0,3,100),(grille1));
 figure(3);
-surf(linspace(0,3,100), linspace(0,3,100),(f2-grille2));
+surf(linspace(0,3,100), linspace(0,3,100),(grille2));
 
 %figure(4);
 %plot3(linspace(0,3,100),linspace(0,3,100),grille1,"bo");

@@ -23,11 +23,8 @@ public:
 
 };
 
-// Fonctions externes mais qui sont en rapport avec la classe Point
+// Fonctions externes liées à la classe Point
 Point* LecPoints(const char* name, int &N);
-void afficheCoordPoints(Point* ListPoints, int N);
-void CreateFilePoint(const char* name, int nrow, Point *A);
-void CreateFileMatPoint(const char* name, int nrow, int ncol, Point **A);
 double multPointsCart(Point A, Point B);
 Point calcVect(Point A, Point B);
 
