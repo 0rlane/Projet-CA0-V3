@@ -50,10 +50,14 @@ void FichierSurface(const char* n_grille , const char* n_fonc, int NumFonc, Poin
 					Point **NM, int NbTri, double **AllCoeff, Point ***SMT);
 
 void results_ListTriangles(std::ostream &fichier, int NbTri, int **NT, Point *Omega);
+
 void results_ListPoints(std::ostream &fichier, int NbTri, Point **NM);
+
 void results_ValFonc(std::ostream &fichier, int NumFonc, int NbPts, Point *ListPoints);
+
 void results_Interpol(std::ostream &fichier, int NbTri, int NumFonc, Point *ListPoints, int **NT, Point *Omega, Point **NM, 
                       double **AllCoeff, Point*** SMT);
+
 void results_Erreur(std::ostream &fichier, int NumFonc, Point *ListPoint, int NbPts, int **NT, Point *Omega, Point **NM, 
                     int NbTri, double **AllCoeff, Point ***SMT);
 

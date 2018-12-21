@@ -1,10 +1,17 @@
-#include "Point.h"
-#include "Triangle.h"
-#include "Matrice.h"
-#include "Fonctions_F_G.h"
+// DUPORT Orlane & TROUILLARD Thomas
+// 21 / 12 / 18
+
+// Projet de CAO :
+// Interpolation par élément fini de Powell et Sabin pour la représentation
+// d'une surface de classe C1
+
+#include "Point.h"          // classe Point
+#include "Triangle.h"       // fonctions d'interpolation
+#include "Matrice.h"        // fonctions templates sur matrices
+#include "Fonctions_F_G.h"  // fonctions d'interpolations utilisées
+
 #include <iostream>
 #include <fstream>
-
 using namespace std;
 
 int main(){
@@ -14,36 +21,28 @@ int main(){
 
     ///////////////////////// GENERATION DU MODELE ////////////////////////////////////////
 
-    // Creation d'un vecteur de nbPts Point contenant tous les points du domaine D
-    Point* ListPoints=LecPoints("points.pts",NbPts);
+    // ListPoints : tous les points du domaine D (Point NbPts)
+    // NT :         les n° de sommets de chaque triangle (int NbTri*3)
+    // NTV :        les n° de triangles voisins de chaque triangle (int NbTri*3)
+    //                  la valeur -1 est affectée s'il n'y a pas de voisin
+    // Omega :      les centre de cercle inscrit de chaque triangle (Point NbTri)
+    // NM :         les points Mi associés à chaque triangle (Point NbTri*3)
+    // SMT :        sommets des micro-triangles de chaque triangle (Point NbTri*6*3)
 
-    // Creation de la matrice NM (NbTri*3) contenant les 3 sommets de chaque triangle
-    int **NT=lectTriangles("listri.dat",NbTri);
-
-    /* Creation de la matrice NTV (NbTri*3) contenant le numero de 3 triangles voisins pour chaque triangle
-    On affecte la valeur -1 lorsqu'il n'y a pas de triangle voisin */
-    int **NTV=initNTV(NbTri,NT);
-
-    // Creation de la matrice Point Omega (NbTri)
-    Point *Omega=initOmega(ListPoints,NbTri,NT);
-
-    // Creation de la matrice Point NM (Nbtri*3)
-    Point **NM=initNM(NT,NTV,ListPoints,NbTri,Omega);
-
-    // Calcul des coordonnées barycentriques aux points Mi
-    CoordBaryMi(NT, ListPoints, NM, NbTri);
-
-    // Calcule des sommets des MicroTriangle pour chaque triangle
-    Point*** SMT = ComputeAllSMT(NbTri, NT, ListPoints, Omega, NM);
+    Point*   ListPoints = LecPoints("points.pts",NbPts);
+    int**    NT         = lectTriangles("listri.dat",NbTri);
+    int**    NTV        = initNTV(NbTri,NT);
+    Point*   Omega      = initOmega(ListPoints,NbTri,NT);
+    Point**  NM         = initNM(NT,NTV,ListPoints,NbTri,Omega);
+    Point*** SMT        = ComputeAllSMT(NbTri, NT, ListPoints, Omega, NM);
 
     ///////////////////////////////////////////////////////////////////////////////////////
 
     ///////////////////////// ECRITURE FICHIER RESULTATS //////////////////////////////////
 
-    // output
-    ofstream fichier("PS.RES");
+    ofstream fichier("PS.RES"); // fichier de résultats
 
-    results_ListTriangles(fichier, NbTri, NT, Omega);
+    results_ListTriangles(fichier, NbTri, NT, Omega); 
     results_ListPoints(fichier, NbTri, NM);
 
     // output pour chaque fonction étudiée (défini dans Fonctions_F_G.h)
@@ -51,8 +50,8 @@ int main(){
     //      2) fonction polynomiale
     for (int NumFonc = 1; NumFonc <= 2; ++NumFonc)
     {
-        // Calcule la matrice de tous les coefficients de chaque triangle
         double** AllCoeff = ComputeAllCoeff(NbTri, NumFonc, NT, ListPoints, NM, Omega);
+        // AllCoeff : matrice de tous les coefficients de chaque triangle
 
         results_ValFonc(fichier, NumFonc, NbPts, ListPoints);
         results_Interpol(fichier, NbTri, NumFonc, ListPoints, NT, Omega, NM, AllCoeff, SMT);
@@ -68,6 +67,7 @@ int main(){
     ///////////////////////// GENERATION DES SURFACES /////////////////////////////////////
 
     bool OutputGrille(false);
+    // true pour générer les grilles de l'interpolant et des fonctions pour représentation Matlab
 
     if (OutputGrille)
     {

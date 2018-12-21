@@ -7,10 +7,10 @@
 using namespace std;
 
 int** lectTriangles(const char* name, int &NbTri){
-    /* Recuperation du nombre de triangle (NbTri) dans le fichier name
-    et creation de la matrice NT contenant les sommet de chaque traingle (NbTri*3) obtenu dans le fichier name */
+    /* Recuperation du nombre de triangle (NbTri) dans le fichier name et creation de la 
+    matrice NT contenant les sommet de chaque triangle (NbTri*3) obtenu dans le fichier name */
 
-    ifstream fichier("listri.dat");
+    ifstream fichier(name);
     fichier>>NbTri;
 
     int** NT=CreateMat<int>(NbTri,3);
@@ -41,7 +41,9 @@ int trianglevoisin(int NbTri, int S1, int S2, int k, int **NT){
 }
 
 int** initNTV(int NbTri, int **NT){
-    // Initialisation de la matrice NTV (NbTri*3)
+    /* Pour chaque triangle, recherche les n° de triangles voisins 
+           la valeur -1 est affectée s'il n'y a pas de voisin 
+    Renvoie la matrive NTV (int NbTri*3) en sortie */
 
     int** NTV=CreateMat<int>(NbTri,3);
 
@@ -54,7 +56,7 @@ int** initNTV(int NbTri, int **NT){
 }
 
 void CalculCoeff(double &a1, double &b1, double &c1, Point A, Point B){
-    // Calcul des coefficents a, b, c de la droite (D): ax+by+c=0 passant par les point A et B
+    // Calcule les coefficents a, b, c de la droite (D): ax+by+c=0 passant par les point A et B
 
     double Xa, Ya, Xb, Yb;
     A.getCart(Xa,Ya);
@@ -65,7 +67,7 @@ void CalculCoeff(double &a1, double &b1, double &c1, Point A, Point B){
 }
 
 Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1, double c2){
-    // Calcul les corrdonnées X et Y d'intersection des deux droites de coeff a,b,c
+    // Calcule les coordonnées X et Y d'intersection des deux droites de coeff a,b,c
 
     Point inter;
     double X, Y;
@@ -93,7 +95,7 @@ Point IntersectionDroites(double a1, double a2, double b1, double b2, double c1,
 }
 
 double DistEucl(Point A, Point B){
-	// Calcule la distance euclidienne entre deux Points
+	// Calcule la distance euclidienne entre les Points A et B
 
 	double Xa, Ya, Xb, Yb;
 	A.getCart(Xa,Ya);
@@ -103,7 +105,8 @@ double DistEucl(Point A, Point B){
 }
 
 Point* initOmega(Point* ListPoints, int NbTri, int **NT){
-    // Initialisation de la matrice Omega de Nbtri Points
+    /* Recherche les Points omega : centre de cercle inscrit de chaque triangle
+    Renvoie le vecteur Omega (Point NbTri)*/
 
     Point *Omega=new Point[NbTri];
     double w1,w2,w3,sumw;
@@ -138,12 +141,9 @@ Point* initOmega(Point* ListPoints, int NbTri, int **NT){
 }
 
 Point** initNM(int **NT, int **NTV, Point* ListPoints, int nbtri, Point *omega){
-    /*Initilisationde la matrice NM Point (nbtriangles*3) qui contient les coordonnees x et y des trois points Mi du triangle k
-    NT=matrice (nb_triangles*3) qui contient les 3 sommets pour chaque traingle
-    NTV= matrice (nb_triangles*3) qui contient le numero des 3 triangles voisins pour chaque triangle (-1 si il n'y a pas de traingle voisin)
-    points=matrice (nb_points*3) qui contient les numero du point et ses coordonnees x et y associees
-    nbtri= nombre de triangles dans le domaine
-    omega= matrice Point (nb_trinagles) qui contient les coefficients x et y du centre du cercle inscrit de chaque triangle */
+    /* Recherche les Points Mi : intersection entre le coté d'un triangle et le segment entre 
+    les centres de cercles inscrit de triangles voisins.
+    Renvoie la matrice NM (Point NbTri*3)*/
 
     Point** NM=CreateMat<Point>(nbtri,3);
 
@@ -152,14 +152,15 @@ Point** initNM(int **NT, int **NTV, Point* ListPoints, int nbtri, Point *omega){
         double a2, b2, c2;
 
         for (int i=0; i<3; i++){
-            if (NTV[k][i]!=-1){
-                // Si il y a un triangle voisin
-                CalculCoeff(a1,b1,c1,ListPoints[NT[k][(i+1)%3]-1],ListPoints[NT[k][(i+2)%3]-1]); // Coefficients de la droite (D1): a1*x+b1*y+c1=0 qui passe par les sommets A2 et A3
-                CalculCoeff(a2,b2,c2,omega[k],omega[NTV[k][i]]);// Coefficients de la droite (D2): a2*x+b2*y+c2=0 qui passe par les sommets le centre du cercle inscrit du triangle k et par le centre du cercle inscrit du triangle voisin de k par les sommets A2 et A3
+            if (NTV[k][i]!=-1){ // Si il y a un triangle voisin
+                CalculCoeff(a1,b1,c1,ListPoints[NT[k][(i+1)%3]-1],ListPoints[NT[k][(i+2)%3]-1]); 
+                // Coefficients de la droite (D1): a1*x+b1*y+c1=0 qui passe par les sommets A2 et A3
+                CalculCoeff(a2,b2,c2,omega[k],omega[NTV[k][i]]);
+                // Coefficients de la droite (D2): a2*x+b2*y+c2=0 qui passe par les sommets le centre du cercle 
+                // inscrit du triangle k et par le centre du cercle inscrit du triangle voisin de k par les sommets A2 et A3
                 NM[k][i]=IntersectionDroites(a1,a2,b1,b2,c1,c2);
 
-            }else {
-                // Si il n'y a pas de triangle voisin
+            }else { // S'il n'y a pas de triangle voisin
                 double X, Y, X1, Y1, X2, Y2;
                 ListPoints[NT[k][(i+1)%3]-1].getCart(X1,Y1);
                 ListPoints[NT[k][(i+2)%3]-1].getCart(X2,Y2);
@@ -169,15 +170,20 @@ Point** initNM(int **NT, int **NTV, Point* ListPoints, int nbtri, Point *omega){
             }
         }
     }
+
+    // calcule les coordonnées barycentriques des points Mi
+    CoordBaryMi(NT, ListPoints, NM, nbtri);
+
     return NM;
 }
 
 void CoordBaryMi(int **NT, Point *ListPoints, Point **NM, int NbTri){
-    // Mise en memoire des coordonnees barycentriques des points M1, M2 et M3
+    /* Calcule les coordonnées barycentriques des points Mi de chaque triangle */
 
     Point A1,A2,A3,M1,M2,M3;
     double alpha1, alpha2, alpha3;
     for (int i = 0; i < NbTri; ++i){
+        
         // Recuperation des coordonnees des sommets A1, A2 et A3 du triangle i
         A1 = ListPoints[NT[i][0]-1];
         A2 = ListPoints[NT[i][1]-1];
@@ -542,11 +548,6 @@ void results_Erreur(ostream &fichier, int NumFonc, Point *ListPoint, int NbPts, 
 
             F = f(grille, NumFonc);
             S = evalInterpolant(grille,ListPoint,NT,Omega,NM,AllCoeff,SMT,NbTri);
-
-            if ((F-S)<(-1.) && NumFonc==1)
-            {
-                cout << "coord minima : " << x << " " << y << endl;
-            }
 
             erreur_min = min(erreur_min,(F-S));
             erreur_max = max(erreur_max,(F-S));
